@@ -1,90 +1,59 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+import { useEffect, useState } from 'react';
+import Header from './components/Header';
+import Hero from './components/Hero';
+import Inspiration from './components/Inspiration';
+import Updates from './components/Updates';
+import Results from './components/Results';
+import ScrollToTop from './components/ScrollToTop';
+import NatijalarGapiradi from './components/NatijalarGapiradi';
+import SodiqSections from './components/SodiqSections';
+import About from './components/About';
+import Motto from './components/Motto';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+function App() {
+  const [page, setPage] = useState(() => window.location.hash === '#about' ? 'about' : 'home');
 
-import React, { useState } from 'react';
-import { AppProvider } from './context/AppContext';
-import { Header } from './components/layout/Header';
-import { Footer } from './components/layout/Footer';
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+    });
 
-// Pages
-import { Home } from './pages/Home';
-import { About } from './pages/About';
-import { Teachers } from './pages/Teachers';
-import { Achievements } from './pages/Achievements';
-import { News } from './pages/News';
-import { NewsDetail } from './pages/NewsDetail';
-import { Events } from './pages/Events';
-import { SchoolClasses } from './pages/Classes';
-import { Admission } from './pages/Admission';
-import { Gallery } from './pages/Gallery';
-import { Vacancies } from './pages/Vacancies';
-import { FAQ } from './pages/FAQ';
-import { Contact } from './pages/Contact';
-import { Admin } from './pages/Admin';
+    const onHashChange = () => {
+      const nextPage = window.location.hash === '#about' ? 'about' : 'home';
+      setPage(nextPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
-export default function App() {
-  const [currentTab, setCurrentTab] = useState<string>('home');
-  const [selectedNewsSlug, setSelectedNewsSlug] = useState<string>('');
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
-  const renderPage = () => {
-    switch (currentTab) {
-      case 'home':
-        return <Home setCurrentTab={setCurrentTab} setSelectedNewsSlug={setSelectedNewsSlug} />;
-      case 'about':
-        return <About />;
-      case 'teachers':
-        return <Teachers />;
-      case 'achievements':
-        return <Achievements />;
-      case 'news':
-        return <News setCurrentTab={setCurrentTab} setSelectedNewsSlug={setSelectedNewsSlug} />;
-      case 'news-detail':
-        return <NewsDetail currentNewsSlug={selectedNewsSlug} setCurrentTab={setCurrentTab} />;
-      case 'events':
-        return <Events />;
-      case 'classes':
-        return <SchoolClasses setCurrentTab={setCurrentTab} />;
-      case 'admission':
-        return <Admission />;
-      case 'gallery':
-        return <Gallery />;
-      case 'vacancies':
-        return <Vacancies />;
-      case 'faq':
-        return <FAQ />;
-      case 'contact':
-        return <Contact />;
-      case 'admin':
-        return <Admin />;
-      default:
-        return <Home setCurrentTab={setCurrentTab} setSelectedNewsSlug={setSelectedNewsSlug} />;
-    }
-  };
+  if (page === 'about') {
+    return (
+      <div className="app-wrapper about-page">
+        <Header solidAtTop />
+        <About />
+        <Motto />
+      </div>
+    );
+  }
 
   return (
-    <AppProvider>
-      <div id="app-root" className="min-h-screen bg-brand-bg flex flex-col justify-between font-sans text-brand-text">
-        <div>
-          {/* Global Sticky Navigation Header */}
-          <Header currentTab={currentTab} setCurrentTab={setCurrentTab} />
-
-          {/* Dynamic Page Main Content Canvas */}
-          <main className="w-full">
-            {renderPage()}
-          </main>
-        </div>
-
-        {/* Global Footer component */}
-        <Footer setCurrentTab={setCurrentTab} />
-      </div>
-    </AppProvider>
+    <div className="app-wrapper">
+      <Header />
+      <Hero />
+      <Inspiration />
+      <Updates />
+      <Results />
+      <NatijalarGapiradi />
+      <SodiqSections />
+      <ScrollToTop />
+    </div>
   );
 }
 
+export default App;

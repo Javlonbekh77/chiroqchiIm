@@ -1,0 +1,144 @@
+.about-section {
+  background: #f7f9fc;
+  color: var(--primary-blue);
+  padding: 96px 0 110px;
+  border-top: 1px solid rgba(7, 26, 51, 0.08);
+}
+
+.about-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-copy {
+  max-width: 920px;
+}
+
+.about-kicker {
+  display: inline-block;
+  color: var(--accent-orange);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 26px;
+}
+
+.about-title {
+  color: var(--primary-blue);
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 1.14;
+  max-width: 860px;
+  margin-bottom: 30px;
+}
+
+.about-text {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 920px;
+}
+
+.about-text p {
+  color: #3d4968;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.about-text strong {
+  color: var(--primary-blue);
+  font-weight: 800;
+}
+
+.about-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-top: 26px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  background: var(--bright-orange);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 700;
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.about-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(255, 106, 0, 0.22);
+}
+
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 44px 58px;
+  margin-top: 58px;
+}
+
+.about-stat {
+  min-width: 0;
+}
+
+.about-stat-value {
+  display: block;
+  color: var(--bright-orange);
+  font-size: 62px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+.about-stat-label {
+  display: block;
+  color: #7d879d;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+@media (max-width: 1023px) {
+  .about-section {
+    padding: 82px 0 92px;
+  }
+
+  .about-title {
+    font-size: 44px;
+  }
+
+  .about-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .about-section {
+    padding: 68px 0 76px;
+  }
+
+  .about-kicker {
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+  }
+
+  .about-title {
+    font-size: 34px;
+    margin-bottom: 22px;
+  }
+
+  .about-text p {
+    font-size: 16px;
+  }
+
+  .about-stats {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    margin-top: 46px;
+  }
+
+  .about-stat-value {
+    font-size: 48px;
+  }
+}

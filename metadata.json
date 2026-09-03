@@ -1,6 +1,0 @@
-{
-  "name": "Chiroqchi Tuman IM",
-  "description": "Chiroqchi tuman ixtisoslashtirilgan maktabining rasmiy va to'liq boshqariladigan veb-sayti. Yangiliklar, yutuqlar, o'qituvchilar, qabul va boshqaruv tizimi.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

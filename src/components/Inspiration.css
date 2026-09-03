@@ -1,0 +1,185 @@
+.inspiration-section {
+  background: #f6f8fb;
+  color: var(--primary-blue);
+  padding: 88px 0 82px;
+  border-bottom: 1px solid rgba(7, 26, 51, 0.08);
+}
+
+.inspiration-container {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.95fr) minmax(360px, 1fr) minmax(330px, 1.05fr);
+  gap: 56px;
+  align-items: center;
+}
+
+.inspiration-side-image,
+.inspiration-campus {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 26px 70px rgba(7, 26, 51, 0.1);
+}
+
+.inspiration-side-image {
+  border-top: 5px solid #8f1037;
+}
+
+.inspiration-side-image img,
+.inspiration-campus img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.38 / 1;
+  object-fit: cover;
+  object-position: center;
+}
+
+.inspiration-copy {
+  min-width: 0;
+}
+
+.inspiration-title {
+  color: #173f67;
+  font-size: clamp(36px, 2.7vw, 48px);
+  font-weight: 800;
+  line-height: 1.14;
+  margin-bottom: 26px;
+}
+
+.inspiration-title span {
+  display: block;
+  color: #741135;
+}
+
+.inspiration-quote {
+  position: relative;
+  padding: 34px 36px 32px;
+  border-radius: 14px;
+  background: #ffffff;
+  border-left: 5px solid #173f67;
+  box-shadow: 0 20px 54px rgba(7, 26, 51, 0.07);
+}
+
+.inspiration-quote-mark {
+  position: absolute;
+  top: -46px;
+  left: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 130px;
+  font-weight: 900;
+  line-height: 1;
+  color: #f6f8fb; /* Match the background of the section roughly or be lighter */
+  -webkit-text-stroke: 3px #cbd5e1; /* The bluish gray outline */
+  user-select: none;
+}
+
+.inspiration-quote p {
+  color: #4b5368;
+  font-size: 18px;
+  line-height: 1.65;
+  font-style: italic;
+}
+
+.inspiration-author {
+  margin-top: 26px;
+  padding-left: 34px;
+}
+
+.inspiration-author strong {
+  display: block;
+  color: #173f67;
+  font-size: 21px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.inspiration-author span {
+  color: #69758b;
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.inspiration-campus {
+  position: relative;
+}
+
+.inspiration-campus::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 42%;
+  background: linear-gradient(to top, rgba(7, 26, 51, 0.72), rgba(7, 26, 51, 0));
+  pointer-events: none;
+}
+
+.inspiration-campus span {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 22px;
+  z-index: 1;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 800;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 1180px) {
+  .inspiration-container {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 38px;
+  }
+
+  .inspiration-copy {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .inspiration-section {
+    padding: 48px 0 40px;
+  }
+
+  .inspiration-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .inspiration-campus {
+    display: none;
+  }
+
+  .inspiration-title {
+    font-size: 26px;
+    margin-bottom: 16px;
+  }
+
+  .inspiration-quote {
+    padding: 20px 16px 18px;
+  }
+
+  .inspiration-quote p {
+    font-size: 15px;
+  }
+
+  .inspiration-author {
+    padding-left: 0;
+    margin-top: 16px;
+  }
+
+  .inspiration-author strong {
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+
+  .inspiration-author span {
+    font-size: 13px;
+  }
+
+  .inspiration-side-image img {
+    aspect-ratio: 1.6 / 1;
+  }
+}

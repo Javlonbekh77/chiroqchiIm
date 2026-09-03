@@ -1,0 +1,169 @@
+.motto-section {
+  position: relative;
+  overflow: hidden;
+  background: var(--primary-blue);
+  color: var(--white);
+  padding: 102px 0 138px;
+}
+
+.motto-container {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1fr);
+  gap: 72px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.motto-copy {
+  min-width: 0;
+}
+
+.motto-kicker {
+  display: inline-block;
+  color: var(--bright-orange);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.motto-title {
+  max-width: 540px;
+  color: var(--white);
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 1.14;
+  margin-bottom: 38px;
+}
+
+.motto-title span {
+  display: block;
+  color: var(--bright-orange);
+}
+
+.motto-card {
+  position: relative;
+  max-width: 595px;
+  min-height: 214px;
+  padding: 40px 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(20, 49, 115, 0.78), rgba(12, 32, 78, 0.82));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 28px 64px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.motto-card p {
+  color: #f6f8ff;
+  font-size: 29px;
+  line-height: 1.55;
+  letter-spacing: 0;
+}
+
+.motto-icon {
+  position: absolute;
+  top: -32px;
+  right: -28px;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--white);
+  background: radial-gradient(circle at 34% 30%, #ffac62 0 22%, var(--bright-orange) 62%, #b94400 100%);
+  box-shadow:
+    0 16px 34px rgba(255, 106, 0, 0.32),
+    0 0 0 8px rgba(255, 255, 255, 0.08);
+}
+
+.motto-image-wrap {
+  min-width: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 28px 68px rgba(0, 0, 0, 0.28);
+}
+
+.motto-image-wrap img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: center;
+}
+
+.motto-pattern {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  background-color: var(--bright-orange);
+}
+
+.motto-pattern::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, var(--primary-blue) 25%, transparent 25%) 0 0 / 64px 64px,
+    linear-gradient(225deg, var(--primary-blue) 25%, transparent 25%) 0 0 / 64px 64px;
+}
+
+@media (max-width: 1023px) {
+  .motto-section {
+    padding: 86px 0 118px;
+  }
+
+  .motto-container {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .motto-title {
+    font-size: 44px;
+  }
+
+  .motto-card {
+    max-width: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .motto-section {
+    padding: 72px 0 104px;
+  }
+
+  .motto-kicker {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  .motto-title {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+
+  .motto-card {
+    min-height: 0;
+    padding: 34px 24px;
+  }
+
+  .motto-card p {
+    font-size: 23px;
+  }
+
+  .motto-icon {
+    top: -24px;
+    right: 18px;
+    width: 58px;
+    height: 58px;
+  }
+
+  .motto-image-wrap img {
+    aspect-ratio: 4 / 3;
+  }
+}

@@ -1,0 +1,760 @@
+Build the FIRST PAGE of a modern, premium school website.
+
+IMPORTANT:
+Do NOT build the entire website yet.
+For this stage, focus ONLY on:
+
+1. Header / Navigation
+2. Main Hero section
+3. Basic responsive structure for these sections
+4. Correct placement and usage of the existing logo file: `main-logo.jpg`
+
+We will build the rest of the website section-by-section later.
+
+---
+
+# 1. DESIGN DIRECTION
+
+The website should feel:
+
+* Modern
+* Premium
+* Trustworthy
+* Educational
+* Professional
+* Slightly futuristic
+* Clean and minimal
+* Suitable for a high-quality private/modern school
+
+The visual identity must primarily use:
+
+### Main colors:
+
+* Dark deep blue
+* Orange / flame orange
+* White
+
+Suggested palette:
+
+* Primary Dark Blue: #071A33
+* Secondary Blue: #0B2748
+* Accent Orange: #FF6A00
+* Bright Orange: #FF7A18
+* White: #FFFFFF
+* Soft White: #F7F9FC
+* Muted text: #AAB7C7
+
+Do NOT make the website overly colorful.
+
+The dominant visual color should be dark blue.
+
+Orange should be used strategically for:
+
+* CTA buttons
+* Small highlights
+* Active navigation states
+* Decorative elements
+* Important numbers
+* Hover effects
+
+White should provide contrast and readability.
+
+---
+
+# 2. GENERAL VISUAL STYLE
+
+Create a premium dark-blue educational landing page.
+
+Avoid:
+
+* Generic school templates
+* Excessive gradients
+* Too many cards
+* Huge rounded corners everywhere
+* Cartoonish school graphics
+* Excessive shadows
+* Cheap-looking UI
+* Random animations
+* Overly bright backgrounds
+
+The website should look like a serious modern educational institution.
+
+Use:
+
+* Strong typography
+* Large visual hierarchy
+* Generous spacing
+* Subtle borders
+* Elegant hover animations
+* Smooth transitions
+* Professional image treatment
+* Modern grid layout
+
+Use rounded corners moderately, approximately 12–20px where appropriate.
+
+---
+
+# 3. LOGO
+
+There is already a logo file in the project:
+
+`main-logo.jpg`
+
+IMPORTANT:
+Use the actual `main-logo.jpg` file.
+
+Do NOT recreate the logo.
+Do NOT generate another logo.
+Do NOT replace it with an icon.
+Do NOT use a random school logo.
+
+Inspect the dimensions/aspect ratio of `main-logo.jpg` and display it correctly without distortion.
+
+The logo should be placed inside the header on the LEFT side.
+
+If the logo has a white background and the design requires it, handle it elegantly without damaging the original logo.
+
+The logo should be visually prominent but not oversized.
+
+Desktop:
+approximately 140–180px wide depending on its original aspect ratio.
+
+Mobile:
+approximately 110–140px wide.
+
+---
+
+# 4. HEADER / NAVIGATION
+
+Create a professional sticky header.
+
+Desktop layout:
+
+LEFT:
+[ SCHOOL LOGO ]
+
+CENTER / RIGHT:
+Navigation menu
+
+Suggested navigation:
+
+* Bosh sahifa
+* Maktab haqida
+* Ta’lim
+* O‘qituvchilar
+* Yangiliklar
+* Aloqa
+
+RIGHT:
+Primary CTA button:
+
+"Qabulga ariza"
+
+The header should have a clean horizontal layout.
+
+Use approximately:
+
+height: 76–88px
+
+Header background:
+deep dark blue.
+
+Example:
+#071A33
+
+The header can have a very subtle bottom border:
+
+rgba(255,255,255,0.08)
+
+Do not use a huge shadow.
+
+---
+
+# 5. NAVIGATION INTERACTIONS
+
+Navigation items should have elegant hover effects.
+
+Default:
+white / slightly muted white text.
+
+Hover:
+orange.
+
+Active page:
+orange.
+
+Use a smooth transition around 200–300ms.
+
+Example interaction:
+
+Bosh sahifa
+↓
+small orange underline / indicator
+
+The underline should animate smoothly from left to right.
+
+Do NOT make the hover effect exaggerated.
+
+---
+
+# 6. HEADER CTA
+
+Create a strong CTA button:
+
+"Qabulga ariza"
+
+Style:
+
+Background:
+#FF6A00
+
+Text:
+white
+
+Border radius:
+10–12px
+
+Font weight:
+600–700
+
+Add subtle hover animation:
+
+* slightly brighter orange
+* translateY(-1px)
+* subtle shadow
+
+The button should feel clickable and premium.
+
+On hover, it can have a very subtle orange glow.
+
+---
+
+# 7. MOBILE HEADER
+
+The header MUST be fully responsive.
+
+On mobile:
+
+LEFT:
+logo
+
+RIGHT:
+hamburger menu
+
+Hide desktop navigation.
+
+When hamburger is clicked:
+open a full-width / elegant mobile navigation menu.
+
+Mobile menu should contain:
+
+* Bosh sahifa
+* Maktab haqida
+* Ta’lim
+* O‘qituvchilar
+* Yangiliklar
+* Aloqa
+* Qabulga ariza
+
+Use a smooth slide/fade animation.
+
+The mobile menu must not look like a default browser dropdown.
+
+---
+
+# 8. HERO / MAIN SECTION
+
+Immediately below the header create the main hero section.
+
+This is the most visually important part of the page.
+
+The hero should communicate:
+
+"Modern education that prepares students for the future."
+
+Do not use generic Lorem Ipsum.
+
+Use realistic Uzbek educational content.
+
+Suggested structure:
+
+Small orange label:
+
+"ZAMONAVIY TA’LIM MUHITI"
+
+Large headline:
+
+"Kelajak uchun bilim.
+Bugun uchun imkoniyat."
+
+Alternative acceptable headline:
+
+"Farzandingizning kelajagi
+bugundan boshlanadi."
+
+Make the headline visually powerful.
+
+Use a large font size on desktop:
+
+approximately 56–72px.
+
+Font weight:
+700–800.
+
+Line height:
+1.05–1.15.
+
+Important words can use orange accent.
+
+For example:
+
+"Kelajak uchun"
+white
+
+"bilim."
+orange
+
+"Bugun uchun imkoniyat."
+white
+
+But keep the amount of orange text limited.
+
+---
+
+# 9. HERO DESCRIPTION
+
+Under the headline add a concise description.
+
+Example:
+
+"Biz o‘quvchilarga zamonaviy bilim, mustaqil fikrlash va amaliy ko‘nikmalarni birlashtirgan ta’lim muhitini taqdim etamiz."
+
+Maximum width:
+approximately 560–620px.
+
+Text color:
+muted light blue/white.
+
+Font size:
+17–19px.
+
+Line height:
+1.6.
+
+---
+
+# 10. HERO CTA BUTTONS
+
+Add two buttons below the description.
+
+Primary:
+
+"Qabulga ariza"
+
+Orange background.
+
+Secondary:
+
+"Maktab haqida"
+
+Transparent / dark blue background with white border.
+
+Example:
+
+[ Qabulga ariza ]   [ Maktab haqida ]
+
+Primary CTA should visually dominate.
+
+Secondary button should be subtle.
+
+Both buttons must have smooth hover animations.
+
+---
+
+# 11. HERO VISUAL
+
+The right side of the hero should contain a large visual.
+
+IMPORTANT:
+Do not create a generic stock-photo-looking school website.
+
+Create a premium composition.
+
+If there is an existing school/student image in the project, use it.
+
+If there is no suitable image yet, create the layout so that an image can easily be inserted later.
+
+The visual should ideally show:
+
+* modern students
+* classroom environment
+* technology
+* learning
+* school environment
+
+The image should be integrated into the dark-blue design.
+
+Possible composition:
+
+Right side:
+large rounded image
+
+Behind image:
+subtle orange circular glow
+
+Around image:
+very subtle geometric decorative elements
+
+Do NOT overdo decorations.
+
+---
+
+# 12. HERO VISUAL STYLE
+
+The image should have:
+
+* 16:10 or approximately 4:3 composition
+* border-radius around 20–28px
+* subtle dark overlay if necessary
+* subtle border
+* premium shadow
+
+Add a very subtle orange accent behind the image.
+
+For example:
+
+orange blurred radial glow with low opacity.
+
+This should create depth without looking flashy.
+
+---
+
+# 13. HERO FLOATING ELEMENT
+
+Optionally add a small floating information card over the image.
+
+Example:
+
+"1000+"
+"O‘quvchilar"
+
+or
+
+"15+"
+"Yillik tajriba"
+
+The card should be small and elegant.
+
+Dark blue / white background depending on the composition.
+
+Orange should be used as the numerical accent.
+
+Example:
+
+15+
+YILLIK TAJRIBA
+
+Do not add too many floating cards.
+
+ONE is enough.
+
+---
+
+# 14. HERO BACKGROUND
+
+Hero background should remain predominantly dark blue.
+
+Use subtle visual depth:
+
+* very soft gradient
+* extremely subtle radial orange glow
+* subtle geometric pattern
+
+Example concept:
+
+dark blue background
++
+very subtle blue gradient
++
+small orange glow around the hero visual.
+
+Do NOT create a neon cyberpunk design.
+
+The school should still feel trustworthy and educational.
+
+---
+
+# 15. HERO DECORATIONS
+
+Add very subtle decorative elements:
+
+* thin lines
+* small circles
+* grid/pattern
+* soft glow
+
+They should support the design rather than distract from the headline.
+
+Decorations must have low opacity.
+
+---
+
+# 16. HERO LAYOUT
+
+Desktop:
+
+Hero should use a two-column layout.
+
+LEFT:
+content
+
+RIGHT:
+visual
+
+Approximately:
+
+45% content
+55% visual
+
+Container width:
+approximately 1200–1280px.
+
+Hero vertical spacing:
+large enough to feel premium.
+
+The hero should occupy approximately 75–90vh depending on viewport.
+
+Do not force it to exactly 100vh if that causes content to be hidden.
+
+---
+
+# 17. RESPONSIVE DESIGN
+
+The entire implementation MUST be responsive.
+
+Desktop:
+two-column hero.
+
+Tablet:
+approximately 50/50 or slightly stacked layout.
+
+Mobile:
+single-column layout.
+
+Mobile order:
+
+1. label
+2. headline
+3. description
+4. CTA buttons
+5. hero image
+6. floating information card if appropriate
+
+Headline on mobile:
+approximately 38–46px.
+
+Buttons:
+full width or near-full width.
+
+Do not allow text overflow.
+
+---
+
+# 18. TYPOGRAPHY
+
+Use a modern professional sans-serif font.
+
+Prefer:
+
+Inter
+
+or
+
+Manrope
+
+or another high-quality modern sans-serif.
+
+Use proper font weights:
+
+400 — body
+500 — navigation
+600 — buttons
+700–800 — hero headline
+
+Typography should have strong hierarchy.
+
+---
+
+# 19. ANIMATIONS
+
+Use subtle premium animations.
+
+On initial page load:
+
+Header:
+fade in slightly.
+
+Hero label:
+fade + slide up.
+
+Headline:
+fade + slide up.
+
+Description:
+fade + slide up.
+
+CTA:
+fade + slide up.
+
+Hero image:
+fade + slight scale from 0.97 → 1.
+
+Use staggered animation timing.
+
+Keep animations fast and elegant.
+
+Do NOT make every element bounce.
+
+---
+
+# 20. HOVER ANIMATIONS
+
+Buttons:
+small translateY(-1px)
+
+Navigation:
+orange underline
+
+Hero image:
+very subtle scale on hover if appropriate
+
+Floating card:
+very subtle movement
+
+Everything should feel smooth.
+
+---
+
+# 21. ACCESSIBILITY
+
+Make sure:
+
+* text has strong contrast
+* buttons are keyboard accessible
+* navigation links are accessible
+* images have meaningful alt text
+* focus states are visible
+* mobile menu can be opened/closed using keyboard
+* animations respect reduced-motion preferences
+
+Implement:
+
+prefers-reduced-motion
+
+for users who disable animations.
+
+---
+
+# 22. TECHNICAL REQUIREMENTS
+
+Build this as a clean, maintainable frontend.
+
+Use reusable components.
+
+Recommended structure:
+
+Header
+Hero
+Button
+MobileMenu
+Container
+
+Do not put the entire page into one huge component.
+
+Keep styles organized.
+
+Use CSS variables / design tokens for:
+
+--primary-blue
+--secondary-blue
+--orange
+--white
+--muted-text
+
+This will make future sections easier to build consistently.
+
+---
+
+# 23. IMPORTANT: DO NOT BUILD FUTURE SECTIONS YET
+
+For this task, DO NOT implement:
+
+* About section
+* Programs section
+* Teachers section
+* News section
+* Statistics section
+* Testimonials
+* Gallery
+* Contact section
+* Footer
+
+We will build those later.
+
+Only create:
+
+HEADER
++
+HERO
+
+The page can have enough bottom spacing after Hero so the next section can be added later.
+
+---
+
+# 24. CODE QUALITY
+
+Before finishing:
+
+* Check responsive behavior
+* Check mobile navigation
+* Check logo rendering
+* Check all buttons
+* Check hover states
+* Check typography
+* Check spacing
+* Check overflow
+* Check console errors
+* Check broken image paths
+* Check accessibility
+
+Do not leave placeholder errors in the console.
+
+Make sure `main-logo.jpg` is referenced using the correct project path.
+
+Do not duplicate the logo.
+
+---
+
+# 25. FINAL DESIGN GOAL
+
+The final result should look like a professionally designed modern private school website.
+
+Visual hierarchy:
+
+DARK BLUE
+↓
+WHITE TYPOGRAPHY
+↓
+ORANGE ACCENTS
+↓
+PREMIUM EDUCATIONAL PHOTOGRAPHY
+↓
+SUBTLE ANIMATIONS
+
+The first impression should be:
+
+"Bu oddiy maktab sayti emas — zamonaviy va kuchli ta’lim brendi."
+
+Do not rush into the next sections.
+
+First make the Header + Hero visually polished and production-ready.
