@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
       <div className="footer-bottom">
         <div className="container developer-credit">
           <span className="dev-text">Designed & Developed by</span>
-          <a href="https://t.me/javlonbek_xoliqulov" target="_blank" rel="noopener noreferrer" className="dev-name">
+          <a href="https://t.me/Javlonbekhs_Blog" target="_blank" rel="noopener noreferrer" className="dev-name">
             Javlonbek Xoliqulov
           </a>
         </div>

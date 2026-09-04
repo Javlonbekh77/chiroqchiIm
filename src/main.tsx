@@ -5,16 +5,17 @@ import ScrollProgress from './components/ScrollProgress.tsx';
 import Footer from './components/Footer.tsx';
 import './index.css';
 
-const App = lazy(() => import('./App.tsx'));
+import App from './App.tsx';
+import AllStudents from './components/AllStudents.tsx';
+import StudentDetail from './components/StudentDetail.tsx';
+import AllNews from './components/AllNews.tsx';
+import NewsDetail from './components/NewsDetail.tsx';
+import AllUniversities from './components/AllUniversities.tsx';
+import Teachers from './components/Teachers.tsx';
+import AllOlympiads from './components/AllOlympiads.tsx';
+import OlympiadDetail from './components/OlympiadDetail.tsx';
+
 const AdminPanel = lazy(() => import('./components/AdminPanel.tsx'));
-const AllStudents = lazy(() => import('./components/AllStudents.tsx'));
-const StudentDetail = lazy(() => import('./components/StudentDetail.tsx'));
-const AllNews = lazy(() => import('./components/AllNews.tsx'));
-const NewsDetail = lazy(() => import('./components/NewsDetail.tsx'));
-const AllUniversities = lazy(() => import('./components/AllUniversities.tsx'));
-const Teachers = lazy(() => import('./components/Teachers.tsx'));
-const AllOlympiads = lazy(() => import('./components/AllOlympiads.tsx'));
-const OlympiadDetail = lazy(() => import('./components/OlympiadDetail.tsx'));
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

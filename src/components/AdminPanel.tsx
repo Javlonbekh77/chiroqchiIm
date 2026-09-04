@@ -743,7 +743,12 @@ const AdminPanel: React.FC = () => {
               <input type="text" placeholder="Natija yoki Ball (masalan, 8.0 yoki 189)" value={certScore} onChange={e => setCertScore(e.target.value)} required />
               
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
-                {studentImage && <img src={studentImage} alt="Preview" style={{height: '50px', width: '50px', objectFit: 'cover', borderRadius: '5px'}}/>}
+                {studentImage && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                    <img src={studentImage} alt="Preview" style={{height: '50px', width: '50px', objectFit: 'cover', borderRadius: '5px'}}/>
+                    <button type="button" onClick={() => { setStudentImage(''); setStudentImageFile(null); }} style={{ padding: '4px 8px', fontSize: '11px', background: 'red', color: 'white', borderRadius: '4px' }}>O'chirish</button>
+                  </div>
+                )}
                 <button type="button" onClick={() => openMediaLibrary(setStudentImage)}>Bazada bor rasmni tanlash</button>
                 <span>yoki yangi sertifikat yuklash:</span>
                 <input type="file" accept="image/*" onChange={e => setStudentImageFile(e.target.files ? e.target.files[0] : null)} />
@@ -832,7 +837,10 @@ const AdminPanel: React.FC = () => {
                 {gradImage && (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
                     <img src={gradImage} alt="Preview" style={{height: '50px', width: '50px', objectFit: 'cover', borderRadius: '50%'}}/>
-                    <button type="button" onClick={() => startCroppingUrl(gradImage, setGradImageFile, setGradImage)} style={{ padding: '4px 8px', fontSize: '11px', background: '#e2e8f0', color: '#0f172a' }}>Rasmni qirqish</button>
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                      <button type="button" onClick={() => startCroppingUrl(gradImage, setGradImageFile, setGradImage)} style={{ padding: '4px 8px', fontSize: '11px', background: '#e2e8f0', color: '#0f172a', borderRadius: '4px' }}>Rasmni qirqish</button>
+                      <button type="button" onClick={() => { setGradImage(''); setGradImageFile(null); }} style={{ padding: '4px 8px', fontSize: '11px', background: 'red', color: 'white', borderRadius: '4px' }}>O'chirish</button>
+                    </div>
                   </div>
                 )}
                 <button type="button" onClick={() => openMediaLibrary(setGradImage)}>Bazada bor rasmni tanlash</button>
@@ -894,11 +902,19 @@ const AdminPanel: React.FC = () => {
 
               <input type="text" placeholder="Sertifikatlari (vergul bilan ajratilgan: SAT, IELTS, Milliy sertifikat)" value={teacherCertInput} onChange={e => setTeacherCertInput(e.target.value)} />
 
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
-                {teacherImage && <img src={teacherImage} alt="Preview" style={{height: '50px', width: '50px', objectFit: 'cover', borderRadius: '5px'}}/>}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px', flexWrap: 'wrap' }}>
+                {teacherImage && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                    <img src={teacherImage} alt="Preview" style={{height: '50px', width: '50px', objectFit: 'cover', borderRadius: '50%'}}/>
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                      <button type="button" onClick={() => startCroppingUrl(teacherImage, setTeacherImageFile, setTeacherImage)} style={{ padding: '4px 8px', fontSize: '11px', background: '#e2e8f0', color: '#0f172a', borderRadius: '4px' }}>Rasmni qirqish</button>
+                      <button type="button" onClick={() => { setTeacherImage(''); setTeacherImageFile(null); }} style={{ padding: '4px 8px', fontSize: '11px', background: 'red', color: 'white', borderRadius: '4px' }}>O'chirish</button>
+                    </div>
+                  </div>
+                )}
                 <button type="button" onClick={() => openMediaLibrary(setTeacherImage)}>Bazada bor rasmni tanlash</button>
-                <span>yoki yangi rasm yuklash:</span>
-                <input type="file" accept="image/*" onChange={e => setTeacherImageFile(e.target.files ? e.target.files[0] : null)} />
+                <span>yoki yangi yuklash (qirqish bilan):</span>
+                <input type="file" accept="image/*" onChange={e => handleFileChangeForCrop(e, setTeacherImageFile, setTeacherImage)} />
               </div>
 
               <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>

@@ -95,11 +95,11 @@ const Teachers: React.FC = () => {
 
             return (
               <div className="teacher-card" key={teacher.id || index}>
+                <div className="teacher-subject-badge">
+                  <BookOpen size={14} /> {(teacher.subject || '').charAt(0).toUpperCase() + (teacher.subject || '').slice(1)}
+                </div>
                 <div className="teacher-image-wrapper">
                   <img src={avatarUrl} alt={teacher.full_name} style={{ objectFit: 'cover' }} />
-                  <div className="teacher-subject-badge">
-                    <BookOpen size={14} /> {(teacher.subject || '').charAt(0).toUpperCase() + (teacher.subject || '').slice(1)}
-                  </div>
                 </div>
                 <div className="teacher-info">
                   <h3>{teacher.full_name}</h3>

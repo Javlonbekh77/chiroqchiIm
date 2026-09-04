@@ -64,11 +64,35 @@ const NatijalarGapiradi: React.FC = () => {
     return () => unsub();
   }, []);
 
+  const parseScore = (scoreStr: string | number | undefined) => {
+    if (!scoreStr) return -1;
+    let s = String(scoreStr).toUpperCase().replace(/\s+/g, '');
+    s = s.replace(/А/g, 'A').replace(/В/g, 'B').replace(/С/g, 'C'); // Cyrillic to Latin
+
+    if (s.includes('A+')) return 1000;
+    if (s.includes('A')) return 900;
+    if (s.includes('B+')) return 800;
+    if (s.includes('B')) return 700;
+    if (s.includes('C+')) return 600;
+    if (s.includes('C')) return 500;
+    
+    const numMatch = s.match(/[\d.]+/);
+    if (numMatch) {
+      const val = parseFloat(numMatch[0]);
+      if (!isNaN(val)) return val;
+    }
+    return 0;
+  };
+
   const students = dbStudents.filter(s => 
     s.type === activeTab || 
     (s.certSubject && s.certSubject.toLowerCase().includes(activeTab.toLowerCase())) ||
     (activeTab === 'DTM' && s.certSubject && s.certSubject.toLowerCase().includes('dtm'))
-  );
+  ).sort((a, b) => {
+    const scoreA = parseScore(a.certScore || a.score);
+    const scoreB = parseScore(b.certScore || b.score);
+    return scoreB - scoreA;
+  });
 
   const count1 = useCountUp(120);
   const count3 = useCountUp(185);
@@ -143,8 +167,6 @@ const NatijalarGapiradi: React.FC = () => {
                 <div 
                   className="ng-card" 
                   key={student?.id || i}
-                  onClick={() => navigate('/students/' + (student?.id || student?.name))}
-                  style={{cursor: 'pointer'}}
                 >
                   <div className="ng-card-image-wrapper">
                     <img src={student.image} alt={student.name} />
