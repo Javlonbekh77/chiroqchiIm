@@ -9,6 +9,8 @@ import AllNews from './components/AllNews.tsx';
 import NewsDetail from './components/NewsDetail.tsx';
 import AllUniversities from './components/AllUniversities.tsx';
 import Teachers from './components/Teachers.tsx';
+import AllOlympiads from './components/AllOlympiads.tsx';
+import OlympiadDetail from './components/OlympiadDetail.tsx';
 import ScrollProgress from './components/ScrollProgress.tsx';
 import './index.css';
 
@@ -25,7 +27,10 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/news/:id" element={<NewsDetail />} />
         <Route path="/universities" element={<AllUniversities />} />
         <Route path="/teachers" element={<Teachers />} />
+        <Route path="/olympiads" element={<AllOlympiads />} />
+        <Route path="/olympiads/:id" element={<OlympiadDetail />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
 );
+

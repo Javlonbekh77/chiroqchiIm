@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDocs, query, where, writeBatch } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import teachersData from '../teachers.json';
+import CropModal from './CropModal';
 import './AdminPanel.css';
 
 const IMGBB_API_KEY = '3edb9537654629fd39126a0964b78bb9';
@@ -21,11 +23,12 @@ const AdminPanel: React.FC = () => {
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const [mediaCallback, setMediaCallback] = useState<((url: string) => void) | null>(null);
 
+  // News form state
   const [newsTitle, setNewsTitle] = useState('');
   const [newsText, setNewsText] = useState('');
   const [newsSize, setNewsSize] = useState('small');
   const [newsImages, setNewsImages] = useState<string[]>([]);
-  const [newsImageFile, setNewsImageFile] = useState<File | null>(null);
+  const [newsImageFiles, setNewsImageFiles] = useState<File[]>([]);
   const [editNewsId, setEditNewsId] = useState<string | null>(null);
 
   // Uni form state
@@ -35,8 +38,19 @@ const AdminPanel: React.FC = () => {
   const [olyTitle, setOlyTitle] = useState('');
   const [olyText, setOlyText] = useState('');
   const [olyStats, setOlyStats] = useState('');
-  const [olyImage, setOlyImage] = useState<string>('');
-  const [olyImageFile, setOlyImageFile] = useState<File | null>(null);
+  const [olyImages, setOlyImages] = useState<string[]>([]);
+  const [olyImageFiles, setOlyImageFiles] = useState<File[]>([]);
+  const [editOlyId, setEditOlyId] = useState<string | null>(null);
+
+  // Teacher form state
+  const [teacherFullName, setTeacherFullName] = useState('');
+  const [teacherSubject, setTeacherSubject] = useState('Matematika');
+  const [teacherExp, setTeacherExp] = useState<number | string>('');
+  const [teacherCategory, setTeacherCategory] = useState('Oliy');
+  const [teacherCertInput, setTeacherCertInput] = useState('');
+  const [teacherImage, setTeacherImage] = useState<string>('');
+  const [teacherImageFile, setTeacherImageFile] = useState<File | null>(null);
+  const [editTeacherId, setEditTeacherId] = useState<string | null>(null);
 
   // Lists from DB
   const [students, setStudents] = useState<any[]>([]);
@@ -45,6 +59,22 @@ const AdminPanel: React.FC = () => {
   const [universities, setUniversities] = useState<any[]>([]);
   const [olympiads, setOlympiads] = useState<any[]>([]);
   const [news, setNews] = useState<any[]>([]);
+  const [teachers, setTeachers] = useState<any[]>([]);
+
+  // Combined Teachers list (includes default JSON items not yet edited/deleted in Firestore)
+  const combinedTeachers = [...teachers.filter(t => !t.isDeleted)];
+  (teachersData as any[]).forEach((jsonTeacher, index) => {
+    const jsonId = `json-${index}`;
+    const exists = teachers.some((t: any) => t.jsonId === jsonId || t.full_name?.trim().toLowerCase() === jsonTeacher.full_name?.trim().toLowerCase());
+    if (!exists) {
+      combinedTeachers.push({
+        id: jsonId,
+        jsonId: jsonId,
+        ...jsonTeacher,
+        isDefaultJson: true
+      });
+    }
+  });
 
   // Student/Certificate form state
   const [studentName, setStudentName] = useState('');
@@ -69,6 +99,30 @@ const AdminPanel: React.FC = () => {
 
   // Gallery form state
   const [galleryImageFiles, setGalleryImageFiles] = useState<File[]>([]);
+
+  // Crop Modal state
+  const [cropImageUrl, setCropImageUrl] = useState<string | null>(null);
+  const [cropCallback, setCropCallback] = useState<((file: File) => void) | null>(null);
+
+  const handleFileChangeForCrop = (e: React.ChangeEvent<HTMLInputElement>, setFile: (f: File) => void, setPreview: (u: string) => void) => {
+    if (e.target.files && e.target.files[0]) {
+      const url = URL.createObjectURL(e.target.files[0]);
+      setCropImageUrl(url);
+      setCropCallback(() => (croppedFile: File) => {
+        setFile(croppedFile);
+        setPreview(URL.createObjectURL(croppedFile));
+      });
+      e.target.value = ''; // Reset input so same file can be selected again
+    }
+  };
+
+  const startCroppingUrl = (url: string, setFile: (f: File) => void, setPreview: (u: string) => void) => {
+    setCropImageUrl(url);
+    setCropCallback(() => (croppedFile: File) => {
+      setFile(croppedFile);
+      setPreview(URL.createObjectURL(croppedFile));
+    });
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -106,6 +160,10 @@ const AdminPanel: React.FC = () => {
       setNews(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
 
+    const unsubTeachers = onSnapshot(collection(db, 'teachers'), (snapshot) => {
+      setTeachers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
     return () => {
       unsubStudents();
       unsubGrads();
@@ -113,6 +171,7 @@ const AdminPanel: React.FC = () => {
       unsubUniversities();
       unsubOlympiads();
       unsubNews();
+      unsubTeachers();
     };
   }, [isLoggedIn]);
 
@@ -150,7 +209,7 @@ const AdminPanel: React.FC = () => {
     if (!window.confirm("Barcha o'zgarishlarni ommaga e'lon qilasizmi?")) return;
     setIsPublishing(true);
     try {
-      const collections = ['news', 'students', 'graduates', 'olympiads', 'universities', 'gallery'];
+      const collections = ['news', 'students', 'graduates', 'olympiads', 'universities', 'gallery', 'teachers'];
       
       for (const col of collections) {
         const q = query(collection(db, col), where("isDraft", "==", true));
@@ -183,7 +242,8 @@ const AdminPanel: React.FC = () => {
     ...gallery.map(g => g.image),
     ...students.map(s => s.image),
     ...graduates.map(g => g.image),
-    ...olympiads.map(o => o.image),
+    ...olympiads.flatMap(o => o.images || [o.image]).filter(Boolean),
+    ...teachers.map(t => t.image).filter(Boolean),
     ...news.flatMap(n => n.images || [n.image]).filter(Boolean)
   ])).filter(Boolean);
 
@@ -342,7 +402,6 @@ const AdminPanel: React.FC = () => {
 
       alert(`${galleryImageFiles.length} ta rasm muvaffaqiyatli qo'shildi!`);
       setGalleryImageFiles([]);
-      // Reset the file input
       const fileInput = document.querySelector('#gallery-file-input') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
     } catch (err) {
@@ -355,19 +414,18 @@ const AdminPanel: React.FC = () => {
 
   const handleAddNews = async (e: React.FormEvent) => {
     e.preventDefault();
-    let additionalImageUrl = null;
-    if (newsImageFile) {
+    let uploadedUrls: string[] = [];
+    if (newsImageFiles.length > 0) {
       setIsUploading(true);
       try {
-        additionalImageUrl = await uploadToImgBB(newsImageFile);
+        uploadedUrls = await Promise.all(newsImageFiles.map(file => uploadToImgBB(file)));
       } catch (err) {
         setIsUploading(false);
         return alert("Rasm yuklashda xatolik yuz berdi");
       }
     }
 
-    const finalImages = [...newsImages];
-    if (additionalImageUrl) finalImages.push(additionalImageUrl);
+    const finalImages = [...newsImages, ...uploadedUrls];
     
     if (finalImages.length === 0) {
       alert("Iltimos, kamida bitta rasm yuklang yoki tanlang!");
@@ -381,7 +439,7 @@ const AdminPanel: React.FC = () => {
         text: newsText,
         size: newsSize,
         images: finalImages,
-        image: finalImages[0] // fallback for older components
+        image: finalImages[0]
       };
 
       if (editNewsId) {
@@ -400,7 +458,7 @@ const AdminPanel: React.FC = () => {
       setNewsTitle('');
       setNewsText('');
       setNewsImages([]);
-      setNewsImageFile(null);
+      setNewsImageFiles([]);
       setEditNewsId(null);
     } catch (err: any) {
       alert("Xatolik yuz berdi: " + err.message);
@@ -436,44 +494,140 @@ const AdminPanel: React.FC = () => {
 
   const handleAddOly = async (e: React.FormEvent) => {
     e.preventDefault();
-    let finalImageUrl = olyImage;
-    if (olyImageFile) {
+    let uploadedUrls: string[] = [];
+    if (olyImageFiles.length > 0) {
       setIsUploading(true);
       try {
-        finalImageUrl = await uploadToImgBB(olyImageFile);
+        uploadedUrls = await Promise.all(olyImageFiles.map(file => uploadToImgBB(file)));
       } catch (err) {
         setIsUploading(false);
-        return alert("Rasm yuklashda xato");
+        return alert("Rasm yuklashda xatolik yuz berdi");
       }
     }
-    
+
+    const finalImages = [...olyImages, ...uploadedUrls];
+
     setIsUploading(true);
     try {
-      await addDoc(collection(db, 'olympiads'), {
+      const statsArray = typeof olyStats === 'string' ? olyStats.split(',').map(s => s.trim()).filter(Boolean) : olyStats;
+      const dataToSave = {
         title: olyTitle,
         text: olyText,
-        stats: olyStats,
-        image: finalImageUrl,
-        isDraft: true,
-        createdAt: new Date().toISOString()
-      });
-      alert("Olimpiada ma'lumoti qo'shildi!");
+        stats: statsArray,
+        images: finalImages,
+        image: finalImages[0] || ''
+      };
+
+      if (editOlyId) {
+        await updateDoc(doc(db, 'olympiads', editOlyId), dataToSave);
+        alert("Olimpiada ma'lumoti yangilandi!");
+      } else {
+        await addDoc(collection(db, 'olympiads'), {
+          ...dataToSave,
+          isDraft: true,
+          createdAt: new Date().toISOString()
+        });
+        alert("Olimpiada ma'lumoti qo'shildi!");
+      }
+      
       setOlyTitle('');
       setOlyText('');
       setOlyStats('');
-      setOlyImage('');
-      setOlyImageFile(null);
+      setOlyImages([]);
+      setOlyImageFiles([]);
+      setEditOlyId(null);
     } catch (err) {
-      alert("Xato");
+      alert("Xatolik yuz berdi");
     } finally {
       setIsUploading(false);
     }
   };
 
+  const handleEditOlyClick = (item: any) => {
+    setEditOlyId(item.id);
+    setOlyTitle(item.title || '');
+    setOlyText(item.text || '');
+    setOlyStats(Array.isArray(item.stats) ? item.stats.join(', ') : item.stats || '');
+    setOlyImages(item.images || [item.image].filter(Boolean));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleAddTeacher = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let finalImageUrl = teacherImage;
+    if (teacherImageFile) {
+      setIsUploading(true);
+      try {
+        finalImageUrl = await uploadToImgBB(teacherImageFile);
+      } catch (err) {
+        setIsUploading(false);
+        return alert("Rasm yuklashda xatolik yuz berdi");
+      }
+    }
+
+    setIsUploading(true);
+    try {
+      const certsArray = teacherCertInput ? teacherCertInput.split(',').map(c => c.trim()).filter(Boolean) : [];
+      const dataToSave = {
+        full_name: teacherFullName,
+        subject: teacherSubject,
+        experience_years: Number(teacherExp) || 0,
+        qualification_category: teacherCategory,
+        certificates: certsArray,
+        image: finalImageUrl || ''
+      };
+
+      if (editTeacherId && !editTeacherId.startsWith('json-')) {
+        await updateDoc(doc(db, 'teachers', editTeacherId), dataToSave);
+        alert("Ustoz ma'lumotlari muvaffaqiyatli yangilandi!");
+      } else {
+        await addDoc(collection(db, 'teachers'), {
+          ...dataToSave,
+          jsonId: editTeacherId?.startsWith('json-') ? editTeacherId : null,
+          isDraft: true,
+          createdAt: new Date().toISOString()
+        });
+        alert(editTeacherId?.startsWith('json-') ? "Ustoz ma'lumotlari yangilandi va bazaga saqlandi!" : "Ustoz ma'lumotlari qo'shildi (Qoralama)!");
+      }
+
+      setTeacherFullName('');
+      setTeacherSubject('Matematika');
+      setTeacherExp('');
+      setTeacherCategory('Oliy');
+      setTeacherCertInput('');
+      setTeacherImage('');
+      setTeacherImageFile(null);
+      setEditTeacherId(null);
+    } catch (err: any) {
+      alert("Xatolik yuz berdi: " + err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleEditTeacherClick = (item: any) => {
+    setEditTeacherId(item.id);
+    setTeacherFullName(item.full_name || '');
+    setTeacherSubject(item.subject || 'Matematika');
+    setTeacherExp(item.experience_years || '');
+    setTeacherCategory(item.qualification_category || 'Oliy');
+    setTeacherCertInput(Array.isArray(item.certificates) ? item.certificates.join(', ') : '');
+    setTeacherImage(item.image || '');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleDelete = async (collectionName: string, id: string) => {
     if (!window.confirm("O'chirishni tasdiqlaysizmi?")) return;
     try {
-      await deleteDoc(doc(db, collectionName, id));
+      if (collectionName === 'teachers' && id.startsWith('json-')) {
+        await addDoc(collection(db, 'teachers'), {
+          jsonId: id,
+          isDeleted: true,
+          createdAt: new Date().toISOString()
+        });
+      } else {
+        await deleteDoc(doc(db, collectionName, id));
+      }
     } catch (err) {
       alert("Xatolik yuz berdi");
     }
@@ -539,6 +693,9 @@ const AdminPanel: React.FC = () => {
           <li className={activeTab === 'graduates' ? 'active' : ''} onClick={() => setActiveTab('graduates')}>
             Bitiruvchilar
           </li>
+          <li className={activeTab === 'teachers' ? 'active' : ''} onClick={() => setActiveTab('teachers')}>
+            Ustozlar
+          </li>
           <li className={activeTab === 'news' ? 'active' : ''} onClick={() => setActiveTab('news')}>
             Yangiliklar
           </li>
@@ -573,7 +730,7 @@ const AdminPanel: React.FC = () => {
               <input type="text" placeholder="Natija yoki Ball (masalan, 8.0 yoki 189)" value={certScore} onChange={e => setCertScore(e.target.value)} required />
               
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
-                {studentImage && <img src={studentImage} alt="Preview" style={{height: '50px'}}/>}
+                {studentImage && <img src={studentImage} alt="Preview" style={{height: '50px', width: '50px', objectFit: 'cover', borderRadius: '5px'}}/>}
                 <button type="button" onClick={() => openMediaLibrary(setStudentImage)}>Bazada bor rasmni tanlash</button>
                 <span>yoki yangi sertifikat yuklash:</span>
                 <input type="file" accept="image/*" onChange={e => setStudentImageFile(e.target.files ? e.target.files[0] : null)} />
@@ -658,11 +815,16 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
-                {gradImage && <img src={gradImage} alt="Preview" style={{height: '50px'}}/>}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px', flexWrap: 'wrap' }}>
+                {gradImage && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}>
+                    <img src={gradImage} alt="Preview" style={{height: '50px', width: '50px', objectFit: 'cover', borderRadius: '50%'}}/>
+                    <button type="button" onClick={() => startCroppingUrl(gradImage, setGradImageFile, setGradImage)} style={{ padding: '4px 8px', fontSize: '11px', background: '#e2e8f0', color: '#0f172a' }}>Rasmni qirqish</button>
+                  </div>
+                )}
                 <button type="button" onClick={() => openMediaLibrary(setGradImage)}>Bazada bor rasmni tanlash</button>
-                <span>yoki yangi yuklash:</span>
-                <input type="file" accept="image/*" onChange={e => setGradImageFile(e.target.files ? e.target.files[0] : null)} />
+                <span>yoki yangi yuklash (qirqish bilan):</span>
+                <input type="file" accept="image/*" onChange={e => handleFileChangeForCrop(e, setGradImageFile, setGradImage)} />
               </div>
               <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                 <button type="submit" disabled={isUploading}>{isUploading ? 'Yuklanmoqda...' : (editGradId ? 'Yangilash' : 'Saqlash')}</button>
@@ -701,6 +863,69 @@ const AdminPanel: React.FC = () => {
           </div>
         )}
 
+        {/* TEACHERS TAB */}
+        {activeTab === 'teachers' && (
+          <div>
+            <h3>Ustoz ma'lumotlarini qo'shish / tahrirlash</h3>
+            <form onSubmit={handleAddTeacher} className="admin-form">
+              <input type="text" placeholder="F.I.SH. (masalan, Aliqulov Ma'ruf Javliyevich)" value={teacherFullName} onChange={e => setTeacherFullName(e.target.value)} required />
+              <input type="text" placeholder="Fani (masalan, Matematika, Ingliz tili)" value={teacherSubject} onChange={e => setTeacherSubject(e.target.value)} required />
+              <input type="number" placeholder="Tajribasi (yillarda, masalan, 15)" value={teacherExp} onChange={e => setTeacherExp(e.target.value)} required />
+              
+              <select value={teacherCategory} onChange={e => setTeacherCategory(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ddd', width: '100%', marginBottom: '10px' }}>
+                <option value="Oliy">Oliy toifa</option>
+                <option value="Birinchi">Birinchi toifa</option>
+                <option value="Ikkinchi">Ikkinchi toifa</option>
+                <option value="Mutaxassis">Mutaxassis</option>
+              </select>
+
+              <input type="text" placeholder="Sertifikatlari (vergul bilan ajratilgan: SAT, IELTS, Milliy sertifikat)" value={teacherCertInput} onChange={e => setTeacherCertInput(e.target.value)} />
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
+                {teacherImage && <img src={teacherImage} alt="Preview" style={{height: '50px', width: '50px', objectFit: 'cover', borderRadius: '5px'}}/>}
+                <button type="button" onClick={() => openMediaLibrary(setTeacherImage)}>Bazada bor rasmni tanlash</button>
+                <span>yoki yangi rasm yuklash:</span>
+                <input type="file" accept="image/*" onChange={e => setTeacherImageFile(e.target.files ? e.target.files[0] : null)} />
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+                <button type="submit" disabled={isUploading}>{isUploading ? 'Yuklanmoqda...' : (editTeacherId ? 'Yangilash' : 'Saqlash')}</button>
+                {editTeacherId && (
+                  <button type="button" onClick={() => {
+                    setEditTeacherId(null);
+                    setTeacherFullName('');
+                    setTeacherSubject('Matematika');
+                    setTeacherExp('');
+                    setTeacherCategory('Oliy');
+                    setTeacherCertInput('');
+                    setTeacherImage('');
+                    setTeacherImageFile(null);
+                  }} style={{ background: '#64748b' }}>Bekor qilish</button>
+                )}
+              </div>
+            </form>
+
+            <div className="items-list">
+              {combinedTeachers.map((item) => (
+                <div key={item.id} className="admin-list-item">
+                  <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                    <img src={item.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.full_name || 'Ustoz')}&background=random`} alt="pic" style={{width: 50, height: 50, objectFit: 'cover', borderRadius: '50%'}}/>
+                    <div>
+                      <strong>{item.full_name}</strong> - {item.subject} ({item.qualification_category} toifa, {item.experience_years} yil tajriba)
+                      {item.isDefaultJson && <span style={{color: '#64748b', marginLeft: '10px', fontSize: '12px'}}>(Standart)</span>}
+                      {item.isDraft && <span style={{color: 'red', marginLeft: '10px'}}>(Qoralama)</span>}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => handleEditTeacherClick(item)} style={{ background: '#3b82f6', color: 'white', padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Tahrirlash</button>
+                    <button onClick={() => handleDelete('teachers', item.id)} className="delete-btn">O'chirish</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* NEWS TAB */}
         {activeTab === 'news' && (
           <div>
@@ -716,7 +941,7 @@ const AdminPanel: React.FC = () => {
               </select>
 
               <div style={{ padding: '10px', background: '#f5f5f5', borderRadius: '8px', marginTop: '10px' }}>
-                <h4>Rasmlar (Carousel)</h4>
+                <h4>Rasmlar (Bir nechta yuklash imkoniyati)</h4>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '10px' }}>
                   {newsImages.map((img, idx) => (
                     <div key={idx} style={{ position: 'relative' }}>
@@ -725,14 +950,14 @@ const AdminPanel: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                   <button type="button" onClick={() => openMediaLibrary((url) => setNewsImages([...newsImages, url]))}>Bazada bor rasmni qo'shish</button>
-                  <span>yoki yangi yuklash (bittadan):</span>
-                  <input type="file" accept="image/*" onChange={e => setNewsImageFile(e.target.files ? e.target.files[0] : null)} />
+                  <span>yoki yangi rasmlar yuklash (bir nechta):</span>
+                  <input type="file" accept="image/*" multiple onChange={e => setNewsImageFiles(e.target.files ? Array.from(e.target.files) : [])} />
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                 <button type="submit" disabled={isUploading}>{isUploading ? 'Yuklanmoqda...' : (editNewsId ? 'Yangilash (Save)' : 'Saqlash')}</button>
                 {editNewsId && (
                   <button type="button" onClick={() => {
@@ -740,6 +965,7 @@ const AdminPanel: React.FC = () => {
                     setNewsTitle('');
                     setNewsText('');
                     setNewsImages([]);
+                    setNewsImageFiles([]);
                   }} style={{ background: '#64748b' }}>Bekor qilish</button>
                 )}
               </div>
@@ -806,7 +1032,7 @@ const AdminPanel: React.FC = () => {
           </div>
         )}
 
-{/* UNIVERSITIES TAB */}
+        {/* UNIVERSITIES TAB */}
         {activeTab === 'universities' && (
           <div>
             <h3>Universitet qo'shish</h3>
@@ -829,33 +1055,58 @@ const AdminPanel: React.FC = () => {
         {/* OLYMPIADS TAB */}
         {activeTab === 'olympiads' && (
           <div>
-            <h3>Olimpiada ma'lumotini qo'shish</h3>
+            <h3>Olimpiada ma'lumotini qo'shish / tahrirlash</h3>
             <form onSubmit={handleAddOly} className="admin-form">
               <input type="text" placeholder="Sarlavha (masalan, Prezident maktabi olimpiadasi)" value={olyTitle} onChange={e => setOlyTitle(e.target.value)} required />
               <textarea placeholder="Qisqacha matn" value={olyText} onChange={e => setOlyText(e.target.value)} required />
-              <input type="text" placeholder="Statistika (masalan, 3 ta oltin medal)" value={olyStats} onChange={e => setOlyStats(e.target.value)} required />
+              <input type="text" placeholder="Statistika (masalan: 3 ta oltin medal, 2 ta kumush medal)" value={olyStats} onChange={e => setOlyStats(e.target.value)} required />
               
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
-                {olyImage && <img src={olyImage} alt="Preview" style={{height: '50px'}}/>}
-                <button type="button" onClick={() => openMediaLibrary(setOlyImage)}>Bazada bor rasmni tanlash</button>
-                <span>yoki yangi yuklash:</span>
-                <input type="file" accept="image/*" onChange={e => setOlyImageFile(e.target.files ? e.target.files[0] : null)} />
+              <div style={{ padding: '10px', background: '#f5f5f5', borderRadius: '8px', marginTop: '10px' }}>
+                <h4>Rasmlar (Bir nechta yuklash imkoniyati)</h4>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                  {olyImages.map((img, idx) => (
+                    <div key={idx} style={{ position: 'relative' }}>
+                      <img src={img} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} />
+                      <button type="button" onClick={() => setOlyImages(olyImages.filter((_, i) => i !== idx))} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', borderRadius: '50%', width: '20px', height: '20px', border: 'none', cursor: 'pointer' }}>x</button>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <button type="button" onClick={() => openMediaLibrary((url) => setOlyImages([...olyImages, url]))}>Bazada bor rasmni qo'shish</button>
+                  <span>yoki yangi rasmlar yuklash (bir nechta):</span>
+                  <input type="file" accept="image/*" multiple onChange={e => setOlyImageFiles(e.target.files ? Array.from(e.target.files) : [])} />
+                </div>
               </div>
-              
-              <button type="submit" disabled={isUploading}>{isUploading ? 'Yuklanmoqda...' : 'Saqlash'}</button>
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+                <button type="submit" disabled={isUploading}>{isUploading ? 'Yuklanmoqda...' : (editOlyId ? 'Yangilash' : 'Saqlash')}</button>
+                {editOlyId && (
+                  <button type="button" onClick={() => {
+                    setEditOlyId(null);
+                    setOlyTitle('');
+                    setOlyText('');
+                    setOlyStats('');
+                    setOlyImages([]);
+                    setOlyImageFiles([]);
+                  }} style={{ background: '#64748b' }}>Bekor qilish</button>
+                )}
+              </div>
             </form>
 
             <div className="items-list">
               {olympiads.map((item) => (
                 <div key={item.id} className="admin-list-item">
                   <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                    <img src={item.image} alt="pic" style={{width: 50, height: 50, objectFit: 'cover', borderRadius: '5px'}}/>
+                    <img src={item.image || (item.images && item.images[0])} alt="pic" style={{width: 50, height: 50, objectFit: 'cover', borderRadius: '5px'}}/>
                     <div>
                       <strong>{item.title}</strong>
                       {item.isDraft && <span style={{color: 'red', marginLeft: '10px'}}>(Qoralama)</span>}
                     </div>
                   </div>
-                  <button onClick={() => handleDelete('olympiads', item.id)} className="delete-btn">O'chirish</button>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => handleEditOlyClick(item)} style={{ background: '#3b82f6', color: 'white', padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Tahrirlash</button>
+                    <button onClick={() => handleDelete('olympiads', item.id)} className="delete-btn">O'chirish</button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -889,6 +1140,21 @@ const AdminPanel: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {cropImageUrl && cropCallback && (
+        <CropModal 
+          imageUrl={cropImageUrl} 
+          onCrop={(cropped) => {
+            cropCallback(cropped);
+            setCropImageUrl(null);
+            setCropCallback(null);
+          }} 
+          onCancel={() => {
+            setCropImageUrl(null);
+            setCropCallback(null);
+          }}
+        />
       )}
     </div>
   );

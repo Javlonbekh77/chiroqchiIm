@@ -43,7 +43,7 @@
 
 .ng-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0;
   border-top: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
@@ -114,7 +114,7 @@
   }
 
   .ng-stats {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0;
     margin-bottom: 32px;
   }
@@ -236,7 +236,7 @@
 
 .ng-card-image-wrapper {
   background-color: var(--accent-orange);
-  height: 260px;
+  height: 300px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -258,7 +258,7 @@
 }
 
 .ng-card-info {
-  padding: 16px;
+  padding: 12px 12px 14px;
   text-align: center;
   background: white;
   position: relative;
@@ -266,7 +266,7 @@
 }
 
 .ng-card-name {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #071A33;
   margin-bottom: 6px;
@@ -281,6 +281,15 @@
   font-weight: 600;
   color: var(--accent-orange);
   margin-bottom: 8px;
+}
+
+.ng-card-score-big {
+  display: inline-block;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent-orange);
+  margin-top: 2px;
+  letter-spacing: -0.5px;
 }
 
 .ng-card-uni {
@@ -312,7 +321,7 @@
     border-radius: 12px;
   }
   .ng-card-image-wrapper {
-    height: 140px;
+    height: 160px;
   }
   .ng-card-info {
     padding: 8px 6px 10px;
@@ -325,6 +334,9 @@
     font-size: 10px;
     padding: 2px 6px;
     margin-bottom: 4px;
+  }
+  .ng-card-score-big {
+    font-size: 16px;
   }
   .ng-card-uni {
     font-size: 9px;

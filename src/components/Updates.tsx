@@ -162,7 +162,7 @@ const Updates: React.FC = () => {
                 <div className={`updates-main-meta ${loading ? 'skeleton' : ''}`} style={{ width: loading ? '100px' : 'auto' }}>
                   {!loading && <Badge>{mainNews.date}</Badge>}
                 </div>
-                <h3 className={loading ? 'skeleton' : ''}>{mainNews.title}</h3>
+                <h3 className={loading ? 'skeleton' : ''} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{mainNews.title}</h3>
               </article>
             )}
 
@@ -175,7 +175,7 @@ const Updates: React.FC = () => {
                   <div className={`updates-small-meta ${loading ? 'skeleton' : ''}`} style={{ width: loading ? '80px' : 'auto' }}>
                     {!loading && <Badge>{item.date}</Badge>}
                   </div>
-                  <h3 className={loading ? 'skeleton' : ''}>{item.title}</h3>
+                  <h3 className={loading ? 'skeleton' : ''} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</h3>
                 </article>
               ))}
             </div>
@@ -187,8 +187,8 @@ const Updates: React.FC = () => {
                     {!loading && <AutoCarousel item={item} />}
                   </div>
                   <div className="updates-side-copy">
-                    <h3 className={loading ? 'skeleton' : ''}>{item.title}</h3>
-                    {item.text && <p className={loading ? 'skeleton' : ''}>{item.text}</p>}
+                    <h3 className={loading ? 'skeleton' : ''} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</h3>
+                    {item.text && <p className={loading ? 'skeleton' : ''} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.text}</p>}
                     <div className={`updates-side-meta ${loading ? 'skeleton' : ''}`} style={{ width: loading ? '80px' : 'auto' }}>
                       {!loading && <Badge>{item.date}</Badge>}
                     </div>

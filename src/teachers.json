@@ -1,0 +1,354 @@
+[
+    {
+        "full_name": "Aliqulov Ma'ruf Javliyevich",
+        "subject": "matematika",
+        "experience_years": 15,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "GRE",
+            "SAT"
+        ]
+    },
+    {
+        "full_name": "Saotov Nurali O'ralovich",
+        "subject": "matematika",
+        "experience_years": 15,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "SAT",
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "O'g'lonov Akmal Xushmatovich",
+        "subject": "matematika",
+        "experience_years": 13,
+        "qualification_category": "Oliy",
+        "certificates": []
+    },
+    {
+        "full_name": "Mustafayeva Dilrabo Rizaqulovna",
+        "subject": "matematika",
+        "experience_years": 30,
+        "qualification_category": "Birinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Xushvoqtov Raximjon To'lqin o'g'li",
+        "subject": "matematika",
+        "experience_years": 6,
+        "qualification_category": "Birinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Usanov Boykeldi Turdimurod o'g'li",
+        "subject": "matematika",
+        "experience_years": 3,
+        "qualification_category": "Birinchi",
+        "certificates": [
+            "SAT"
+        ]
+    },
+    {
+        "full_name": "Xolboyev Sharifjon Shaxriyorovich",
+        "subject": "matematika",
+        "experience_years": 10,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "SAT",
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Qodirova Latofat Xusniddinxon qizi",
+        "subject": "ingliz tili",
+        "experience_years": 5,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "TKT"
+        ]
+    },
+    {
+        "full_name": "Tursunov Sanjar Baxtiyorovich",
+        "subject": "ingliz tili",
+        "experience_years": 10,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "TKT",
+            "B2"
+        ]
+    },
+    {
+        "full_name": "Narzullayev Shovkat Bobomurodovich",
+        "subject": "ingliz tili",
+        "experience_years": 5,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "IELTS"
+        ]
+    },
+    {
+        "full_name": "Eshonqulov Xidir Xolmuminovich",
+        "subject": "ingliz tili",
+        "experience_years": 18,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "B2"
+        ]
+    },
+    {
+        "full_name": "Ismailova Gulhayo Qo'chqorovna",
+        "subject": "biologiya",
+        "experience_years": 4,
+        "qualification_category": "Birinchi",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Sadatova Lobar Orip qizi",
+        "subject": "biologiya",
+        "experience_years": 3,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Abdimo'minov Odil Baxtiyorovich",
+        "subject": "biologiya",
+        "experience_years": 4,
+        "qualification_category": "Birinchi",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Jabborov Dilshod Almardonovich",
+        "subject": "tarix",
+        "experience_years": 13,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Toshnazarov Fahriddin Qudratovich",
+        "subject": "tarix",
+        "experience_years": 37,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Mustafayeva Marhabo Rizaqulovna",
+        "subject": "ona tili va adabiyot",
+        "experience_years": 31,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Ermatova Yulduz Suyunovna",
+        "subject": "ona tili va adabiyot",
+        "experience_years": 32,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat (B+)"
+        ]
+    },
+    {
+        "full_name": "Xaqnazarova Yulduz Abdurahmonovna",
+        "subject": "ona tili va adabiyot",
+        "experience_years": 18,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat (B+)"
+        ]
+    },
+    {
+        "full_name": "Xayitova Mahbuba Malikovna",
+        "subject": "ona tili va adabiyot",
+        "experience_years": 18,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Xoliqulov Hamdam Uralovich",
+        "subject": "fizika",
+        "experience_years": 3,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Jabborov Uktam Abraevich",
+        "subject": "fizika",
+        "experience_years": 27,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Ismailova Muazzam Qo'chqorovna",
+        "subject": "kimyo",
+        "experience_years": 20,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Beknazarova Nigora Nazarovana",
+        "subject": "tasviriy san'at",
+        "experience_years": 6,
+        "qualification_category": "Ikkinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Ismoilov Iskandar Quchqorovich",
+        "subject": "tarbiya",
+        "experience_years": 8,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat (B+)"
+        ]
+    },
+    {
+        "full_name": "Xolbozarov Uchqun Erkinovich",
+        "subject": "matematika",
+        "experience_years": 8,
+        "qualification_category": "Birinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Beknazarova Nargiza Nazarovana",
+        "subject": "musiqa",
+        "experience_years": 9,
+        "qualification_category": "Ikkinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Bobojonova Robiya Jurayevna",
+        "subject": "rus tili",
+        "experience_years": 40,
+        "qualification_category": "Birinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Jabborov Najmiddin Evadullayevich",
+        "subject": "Informatika va AT",
+        "experience_years": 12,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Astrum sertifikati"
+        ]
+    },
+    {
+        "full_name": "Amanov Otabek Xolmo'rodovich",
+        "subject": "jismoniy tarbiya",
+        "experience_years": 9,
+        "qualification_category": "Oliy",
+        "certificates": []
+    },
+    {
+        "full_name": "Erkayeva Shaxnoza O'ralovna",
+        "subject": "geografiya",
+        "experience_years": 11,
+        "qualification_category": "Birinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Jumanova Nasiba Bobodustovna",
+        "subject": "fizika",
+        "experience_years": 9,
+        "qualification_category": "Birinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Norqobilov Sanjar Xaydarovich",
+        "subject": "kimyo",
+        "experience_years": 4,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Milliy sertifikat"
+        ]
+    },
+    {
+        "full_name": "Muxammadiyeva Sevara Xikmatullayevna",
+        "subject": "rus tili",
+        "experience_years": 12,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "TRKI-III (C1)"
+        ]
+    },
+    {
+        "full_name": "Xolbozorov Sardor To'lqin o'g'li",
+        "subject": "matematika",
+        "experience_years": 6,
+        "qualification_category": "Birinchi",
+        "certificates": [
+            "SAT"
+        ]
+    },
+    {
+        "full_name": "Pardayeva O'g'iloy Abdullayevna",
+        "subject": "rus tili",
+        "experience_years": 12,
+        "qualification_category": "Ikkinchi",
+        "certificates": [
+            "TRKI-III (C1)"
+        ]
+    },
+    {
+        "full_name": "Berdiqulova Soxiba Abdixalikovna",
+        "subject": "ingliz tili",
+        "experience_years": 15,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "B2"
+        ]
+    },
+    {
+        "full_name": "Qoraboyeva Nilufar Toshmurodovna",
+        "subject": "kimyo",
+        "experience_years": 17,
+        "qualification_category": "Ikkinchi",
+        "certificates": []
+    },
+    {
+        "full_name": "Aliqulova Barno Sarvarovna",
+        "subject": "ingliz tili",
+        "experience_years": 11,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "TKT",
+            "B2"
+        ]
+    },
+    {
+        "full_name": "Xolmuradova Habiba O`ralovna",
+        "subject": "Informatika",
+        "experience_years": 12,
+        "qualification_category": "Oliy",
+        "certificates": [
+            "Xalqaro sertifikat"
+        ]
+    },
+    {
+        "full_name": "Xoliqulov Jasur Mansur O`g`li",
+        "subject": "Informatika va AT",
+        "experience_years": 2,
+        "qualification_category": "Birinchi",
+        "certificates": [
+            "Astrum sertifikati"
+        ]
+    }
+]

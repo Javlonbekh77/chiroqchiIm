@@ -1,67 +1,81 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Star, Award } from 'lucide-react';
+import { ArrowLeft, BookOpen, Star, Award, Shield } from 'lucide-react';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
 import './AllPages.css';
 import './Teachers.css';
+import teachersData from '../teachers.json';
 
-const sampleTeachers = [
-  {
-    id: '1',
-    name: "Javlonbek Xoliqulov",
-    subject: "Informatika va IT",
-    image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=720&q=80",
-    experience: "5 yil",
-    bio: "Dasturlash va axborot texnologiyalari bo'yicha mutaxassis. O'quvchilarni zamonaviy texnologiyalarga yo'naltiradi.",
-    achievements: ["IT Park rezidenti", "Olimpiada tayyorgarligi"]
-  },
-  {
-    id: '2',
-    name: "Nodira Karimova",
-    subject: "Matematika",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=720&q=80",
-    experience: "12 yil",
-    bio: "Oliy toifali matematika o'qituvchisi. Ko'plab olimpiada g'oliblari va talabalar ustozi.",
-    achievements: ["Xalq ta'limi a'lochisi", "10+ Respublika g'oliblari"]
-  },
-  {
-    id: '3',
-    name: "Dilshod Rahmonov",
-    subject: "Ingliz tili",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=720&q=80",
-    experience: "8 yil",
-    bio: "IELTS 8.5 sohibi. O'quvchilarni xalqaro sertifikatlarga qisqa muddatda tayyorlash bo'yicha katta tajribaga ega.",
-    achievements: ["IELTS 8.5", "TESOL sertifikati"]
-  },
-  {
-    id: '4',
-    name: "Malika Yusupova",
-    subject: "Ona tili va Adabiyot",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=720&q=80",
-    experience: "15 yil",
-    bio: "O'zbek tili va adabiyotini sevib o'rgatuvchi, chuqur bilim va keng dunyoqarashga ega ustoz.",
-    achievements: ["Oliy toifa", "Eng yaxshi ustoz - 2022"]
-  },
-  {
-    id: '5',
-    name: "Azizbek Toshev",
-    subject: "Fizika",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=720&q=80",
-    experience: "7 yil",
-    bio: "Aniq fanlar yo'nalishida iqtidorli yoshlarni kashf etish va ularni xalqaro darajaga olib chiqish bo'yicha yetakchi.",
-    achievements: ["Xalqaro olimpiada hakam", "Yilning eng faol o'qituvchisi"]
-  },
-  {
-    id: '6',
-    name: "Shahnoza Umarova",
-    subject: "Kimyo va Biologiya",
-    image: "https://images.unsplash.com/photo-1598550874175-4d0ef436c909?auto=format&fit=crop&w=720&q=80",
-    experience: "10 yil",
-    bio: "Tabiiy fanlarni amaliyot va tajribalar orqali tushuntiradigan tajribali ustoz.",
-    achievements: ["Oliy toifa", "Tibbiyot yo'nalishi eksperti"]
-  }
-];
+interface TeacherData {
+  id?: string;
+  jsonId?: string;
+  full_name: string;
+  subject: string;
+  experience_years: number;
+  qualification_category: string;
+  certificates: string[];
+  image?: string;
+  isDeleted?: boolean;
+}
+
+const defaultTeachers = teachersData as TeacherData[];
 
 const Teachers: React.FC = () => {
+  const [dbTeachers, setDbTeachers] = useState<TeacherData[]>([]);
+
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'teachers'), (snapshot) => {
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as TeacherData & { isDraft?: boolean }))
+        .filter((doc) => !doc.isDraft);
+      setDbTeachers(data);
+    });
+    return () => unsub();
+  }, []);
+
+  // Merge dbTeachers with defaultTeachers (excluding deleted items)
+  const activeDbTeachers = dbTeachers.filter(t => !t.isDeleted);
+  const combinedTeachers: TeacherData[] = [...activeDbTeachers];
+
+  defaultTeachers.forEach((jsonT, idx) => {
+    const jsonId = `json-${idx}`;
+    const isDeletedInDb = dbTeachers.some(t => t.jsonId === jsonId && t.isDeleted);
+    const isAlreadyInDb = dbTeachers.some(t => t.jsonId === jsonId || t.full_name?.trim().toLowerCase() === jsonT.full_name?.trim().toLowerCase());
+    
+    if (!isDeletedInDb && !isAlreadyInDb) {
+      combinedTeachers.push({
+        id: jsonId,
+        ...jsonT
+      });
+    }
+  });
+
+  // Sorting priority:
+  // 1. Has photo (image exists and not empty)
+  // 2. Category: Oliy (4) > Birinchi (3) > Ikkinchi (2) > Mutaxassis (1)
+  // 3. Experience years descending
+  const categoryRank = (cat: string) => {
+    const lower = (cat || '').toLowerCase();
+    if (lower.includes('oliy')) return 4;
+    if (lower.includes('birinchi')) return 3;
+    if (lower.includes('ikkinchi')) return 2;
+    if (lower.includes('mutaxassis')) return 1;
+    return 0;
+  };
+
+  const teachersList = combinedTeachers.sort((a, b) => {
+    const hasPhotoA = a.image && a.image.trim().length > 0 ? 1 : 0;
+    const hasPhotoB = b.image && b.image.trim().length > 0 ? 1 : 0;
+    if (hasPhotoA !== hasPhotoB) return hasPhotoB - hasPhotoA;
+
+    const rankA = categoryRank(a.qualification_category);
+    const rankB = categoryRank(b.qualification_category);
+    if (rankA !== rankB) return rankB - rankA;
+
+    return (Number(b.experience_years) || 0) - (Number(a.experience_years) || 0);
+  });
+
   return (
     <div className="page-container" style={{ background: '#f7f9fc' }}>
       <div className="container">
@@ -75,29 +89,41 @@ const Teachers: React.FC = () => {
         </div>
 
         <div className="teachers-grid">
-          {sampleTeachers.map(teacher => (
-            <div className="teacher-card" key={teacher.id}>
-              <div className="teacher-image-wrapper">
-                <img src={teacher.image} alt={teacher.name} />
-                <div className="teacher-subject-badge">
-                  <BookOpen size={14} /> {teacher.subject}
+          {teachersList.map((teacher, index) => {
+            const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.full_name || 'Ustoz')}&background=random&color=fff&size=512&bold=true`;
+            const avatarUrl = teacher.image || fallbackAvatar;
+
+            return (
+              <div className="teacher-card" key={teacher.id || index}>
+                <div className="teacher-image-wrapper">
+                  <img src={avatarUrl} alt={teacher.full_name} style={{ objectFit: 'cover' }} />
+                  <div className="teacher-subject-badge">
+                    <BookOpen size={14} /> {(teacher.subject || '').charAt(0).toUpperCase() + (teacher.subject || '').slice(1)}
+                  </div>
+                </div>
+                <div className="teacher-info">
+                  <h3>{teacher.full_name}</h3>
+                  <div className="teacher-meta">
+                    <span><Star size={14} className="meta-icon" /> {teacher.experience_years} yil tajriba</span>
+                    <span><Shield size={14} className="meta-icon" style={{marginLeft: '10px'}} /> {teacher.qualification_category} toifa</span>
+                  </div>
+                  <p className="teacher-bio">
+                    {teacher.qualification_category} toifali {teacher.subject} fani o'qituvchisi. O'quvchilarga chuqur bilim berish bo'yicha {teacher.experience_years} yillik pedagogik tajribaga ega.
+                  </p>
+                  
+                  <div className="teacher-achievements">
+                    {teacher.certificates && teacher.certificates.length > 0 ? (
+                      teacher.certificates.map((cert, idx) => (
+                        <span key={idx} className="achievement-tag"><Award size={12} /> {cert}</span>
+                      ))
+                    ) : (
+                      <span className="achievement-tag" style={{ opacity: 0.6 }}><Award size={12} /> Umumiy</span>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="teacher-info">
-                <h3>{teacher.name}</h3>
-                <div className="teacher-meta">
-                  <span><Star size={14} className="meta-icon" /> {teacher.experience} tajriba</span>
-                </div>
-                <p className="teacher-bio">{teacher.bio}</p>
-                
-                <div className="teacher-achievements">
-                  {teacher.achievements.map((ach, idx) => (
-                    <span key={idx} className="achievement-tag"><Award size={12} /> {ach}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

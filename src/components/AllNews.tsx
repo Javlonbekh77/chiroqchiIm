@@ -103,8 +103,8 @@ const AllNews: React.FC = () => {
                   {!loading && <img src={item.image || '/school.png'} alt={item.title} />}
                 </div>
                 <div className="ng-card-info">
-                  <h3 className={`ng-card-name ${loading ? 'skeleton' : ''}`}>{item.title}</h3>
-                  {item.text && <p className={loading ? 'skeleton' : ''} style={{ fontSize: 14, color: '#666', marginBottom: 10 }}>{item.text}</p>}
+                  <h3 className={`ng-card-name ${loading ? 'skeleton' : ''}`} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</h3>
+                  {item.text && <p className={loading ? 'skeleton' : ''} style={{ fontSize: 14, color: '#666', marginBottom: 10, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.text}</p>}
                   <div style={{ display: 'flex', gap: 10 }}>
                     <div className={loading ? 'skeleton' : ''} style={{ borderRadius: '4px', width: loading ? '80px' : 'auto' }}>
                       {!loading && <Badge>{item.date}</Badge>}

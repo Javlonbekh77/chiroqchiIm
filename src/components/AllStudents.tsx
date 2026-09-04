@@ -1,29 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { ArrowLeft, Award, GraduationCap } from 'lucide-react';
 import './AllPages.css';
+import './Results.css';
 
-const sampleIelts = [
-  { id: 'ielts-1', name: 'Manzura Karimova', score: 'IELTS: 8.0, DTM: 191', university: 'HARVARD UNIVERSITY', type: 'IELTS', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=520&q=80' },
-  { id: 'ielts-2', name: 'Aslamov Murod', score: 'IELTS: 8.5, DTM: 193', university: 'NYU ABU DHABI', type: 'IELTS', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=520&q=80' },
-  { id: 'ielts-3', name: 'Xotamov Saidvalixon', score: 'IELTS: 8.0, DTM: 187', university: 'UNIVERSITY OF HONG KONG', type: 'IELTS', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=520&q=80' },
-  { id: 'ielts-4', name: 'Irgashev Mustafo', score: 'IELTS: 7.5, DTM: 184', university: 'SABANCI UNIVERSITY', type: 'IELTS', image: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=520&q=80' }
-];
-
-const sampleDtm = [
-  { id: 'dtm-1', name: 'Mavlonov Abbos', score: 'SAT: 1540, DTM: 186', university: 'TDTU', type: 'DTM', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=520&q=80' },
-  { id: 'dtm-2', name: 'Rauf Lutfulloh', score: 'SAT: 1480, DTM: 181', university: 'O\'zMU', type: 'DTM', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=520&q=80' },
-  { id: 'dtm-3', name: 'Alisher Qodirov', score: 'Ona tili: 95%, DTM: 189', university: 'TUIT', type: 'DTM', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=520&q=80' },
-  { id: 'dtm-4', name: 'Zuhra Valiyeva', score: 'Tarix: 98%, DTM: 188', university: 'TDSHU', type: 'DTM', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=520&q=80' }
-];
+const SUBJECT_FILTERS = ['Barchasi', 'Matematika', 'IELTS', 'CEFR', 'Ona tili', 'Biologiya', 'Kimyo', 'Tarix', 'Fizika', 'DTM'];
 
 const AllStudents: React.FC = () => {
   const [dbStudents, setDbStudents] = useState<any[]>([]);
   const [dbGrads, setDbGrads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [subjectFilter, setSubjectFilter] = useState('Barchasi');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const initialTab = queryParams.get('tab') === 'graduates' ? 'graduates' : 'certificates';
+  const [activeTab, setActiveTab] = useState<'certificates' | 'graduates'>(initialTab);
+
+  useEffect(() => {
+    const qTab = new URLSearchParams(location.search).get('tab');
+    if (qTab === 'graduates') setActiveTab('graduates');
+    else if (qTab === 'certificates') setActiveTab('certificates');
+  }, [location.search]);
 
   useEffect(() => {
     let studentsLoaded = false;
@@ -31,7 +32,7 @@ const AllStudents: React.FC = () => {
 
     const checkLoading = () => {
       if (studentsLoaded && gradsLoaded) setLoading(false);
-    }
+    };
 
     const unsub = onSnapshot(collection(db, 'students'), (snapshot) => {
       setDbStudents(
@@ -56,36 +57,177 @@ const AllStudents: React.FC = () => {
     return () => { unsub(); unsubGrads(); };
   }, []);
 
-  const students = loading ? [...sampleIelts, ...sampleDtm] : (dbGrads.length > 0 || dbStudents.length > 0 ? [...dbGrads, ...dbStudents] : [...sampleIelts, ...sampleDtm]);
+  // Filter certificates by subject
+  const filteredCertificates = subjectFilter === 'Barchasi' 
+    ? dbStudents 
+    : dbStudents.filter(s => 
+        s.type === subjectFilter || 
+        (s.certSubject && s.certSubject.toLowerCase().includes(subjectFilter.toLowerCase())) ||
+        (subjectFilter === 'DTM' && s.certSubject && s.certSubject.toLowerCase().includes('dtm'))
+      );
 
   return (
-    <div className="page-container">
+    <div className="page-container" style={{ background: '#f7f9fc' }}>
       <div className="container">
         <Link to="/" className="back-link">
           <ArrowLeft size={20} /> Asosiy sahifaga qaytish
         </Link>
-        <h1 className="page-title">Barcha Natija va Sertifikatlar</h1>
-        <div className="all-grid">
-          {students.map((student, i) => (
-            <div 
-              className="ng-card" 
-              key={student.id || student.name || i}
-              onClick={() => !loading && navigate('/students/' + (student.id || student.name))}
-              style={{cursor: loading ? 'default' : 'pointer'}}
-            >
-              <div className={`ng-card-image-wrapper ${loading ? 'skeleton' : ''}`}>
-                {!loading && <img src={student.image} alt={student.name} />}
-              </div>
-              <div className="ng-card-info">
-                <h3 className={`ng-card-name ${loading ? 'skeleton' : ''}`}>{student.name}</h3>
-                <div className={`ng-card-score ${loading ? 'skeleton' : ''}`}>{!loading ? (student.certScore ? `${student.certScore} ball` : (student.admissionScore || student.score)) : 'Loading score'}</div>
-                <div className={`ng-card-uni ${loading ? 'skeleton' : ''}`} style={{ fontWeight: 600, color: loading ? 'transparent' : 'var(--accent-orange)' }}>
-                  {!loading ? (student.certSubject || student.university || (student.grade ? student.grade + "-sinf" : '')) : 'University'}
-                </div>
-              </div>
-            </div>
-          ))}
+
+        <div className="section-head centered" style={{ marginBottom: '30px' }}>
+          <h1 className="page-title">
+            {activeTab === 'certificates' ? 'O\'quvchilar va Sertifikatlar' : 'Maktabimiz Bitiruvchilari'}
+          </h1>
+          <p className="teachers-subtitle" style={{ maxWidth: '650px', margin: '10px auto 0' }}>
+            {activeTab === 'certificates' 
+              ? 'Xalqaro va respublika sertifikatlariga ega iqtidorli o\'quvchilarimiz' 
+              : 'Nufuzli oliy ta\'lim muassasalariga grant va kontrakt asosida kirgan bitiruvchilarimiz'}
+          </p>
         </div>
+
+        {/* Tab Selector */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', marginBottom: '24px' }}>
+          <button
+            onClick={() => setActiveTab('certificates')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              borderRadius: '30px',
+              border: activeTab === 'certificates' ? '2px solid var(--accent-orange)' : '1px solid #cbd3df',
+              background: activeTab === 'certificates' ? 'var(--accent-orange)' : '#ffffff',
+              color: activeTab === 'certificates' ? '#ffffff' : '#071a33',
+              fontWeight: 700,
+              fontSize: '15px',
+              cursor: 'pointer',
+              boxShadow: activeTab === 'certificates' ? '0 6px 20px rgba(255,107,0,0.3)' : 'none',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <Award size={18} /> Sertifikatlilar ({dbStudents.length})
+          </button>
+          
+          <button
+            onClick={() => setActiveTab('graduates')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              borderRadius: '30px',
+              border: activeTab === 'graduates' ? '2px solid var(--accent-orange)' : '1px solid #cbd3df',
+              background: activeTab === 'graduates' ? 'var(--accent-orange)' : '#ffffff',
+              color: activeTab === 'graduates' ? '#ffffff' : '#071a33',
+              fontWeight: 700,
+              fontSize: '15px',
+              cursor: 'pointer',
+              boxShadow: activeTab === 'graduates' ? '0 6px 20px rgba(255,107,0,0.3)' : 'none',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <GraduationCap size={18} /> Bitiruvchilar ({dbGrads.length})
+          </button>
+        </div>
+
+        {/* Subject Filter for Certificates */}
+        {activeTab === 'certificates' && (
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '8px', 
+            marginBottom: '36px', 
+            flexWrap: 'wrap',
+            padding: '0 10px'
+          }}>
+            {SUBJECT_FILTERS.map(filter => (
+              <button
+                key={filter}
+                onClick={() => setSubjectFilter(filter)}
+                style={{
+                  padding: '8px 18px',
+                  borderRadius: '22px',
+                  border: subjectFilter === filter ? '2px solid var(--accent-orange)' : '1px solid #d1d5db',
+                  background: subjectFilter === filter ? 'var(--accent-orange)' : '#f8fafc',
+                  color: subjectFilter === filter ? '#fff' : '#374151',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  transition: 'all 0.25s ease',
+                  boxShadow: subjectFilter === filter ? '0 4px 14px rgba(255,107,0,0.25)' : 'none'
+                }}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Content View */}
+        {activeTab === 'certificates' ? (
+          filteredCertificates.length > 0 ? (
+            <div className="all-grid">
+              {filteredCertificates.map((student, i) => (
+                <div 
+                  className="ng-card" 
+                  key={student.id || i}
+                  onClick={() => navigate('/students/' + (student.id || student.name))}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="ng-card-image-wrapper">
+                    <img src={student.image} alt={student.name} />
+                  </div>
+                  <div className="ng-card-info">
+                    <h3 className="ng-card-name">{student.name}</h3>
+                    <div className="ng-card-score-big">{student.certScore || student.score || ''}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '80px 20px', 
+              color: '#94a3b8',
+              fontSize: '16px'
+            }}>
+              {loading ? 'Yuklanmoqda...' : (subjectFilter !== 'Barchasi' ? `"${subjectFilter}" fani bo'yicha sertifikatlar topilmadi` : 'Hali sertifikat ma\'lumotlari qo\'shilmagan')}
+            </div>
+          )
+        ) : (
+          dbGrads.length > 0 ? (
+            <div className="results-grid" style={{ maxWidth: '100%' }}>
+              {dbGrads.map((card, index) => (
+                <article 
+                  className="result-card" 
+                  key={card.id || index}
+                  onClick={() => navigate('/students/' + card.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {card.badge && <span className="result-badge">{card.badge}</span>}
+                  <div className="result-photo">
+                    <img src={card.image} alt={card.name} />
+                  </div>
+                  <div className="result-body">
+                    <span className="result-university">
+                      {card.university}
+                    </span>
+                    <h3>{card.name}</h3>
+                    {card.bio && <p style={{ fontSize: '13px', color: '#64748b', marginTop: '6px', display: 'block' }}>{card.bio}</p>}
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '80px 20px', 
+              color: '#94a3b8',
+              fontSize: '16px'
+            }}>
+              {loading ? 'Yuklanmoqda...' : 'Hali bitiruvchi ma\'lumotlari qo\'shilmagan'}
+            </div>
+          )
+        )}
       </div>
     </div>
   );

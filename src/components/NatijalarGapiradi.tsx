@@ -47,22 +47,8 @@ const useCountUp = (end: number, duration: number = 2000, decimals: number = 0) 
   return count.toFixed(decimals);
 };
 
-const sampleIelts = [
-  { id: 'ielts-1', name: 'Manzura Karimova', score: 'IELTS: 8.0, DTM: 191', university: 'HARVARD UNIVERSITY', type: 'IELTS', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=520&q=80' },
-  { id: 'ielts-2', name: 'Aslamov Murod', score: 'IELTS: 8.5, DTM: 193', university: 'NYU ABU DHABI', type: 'IELTS', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=520&q=80' },
-  { id: 'ielts-3', name: 'Xotamov Saidvalixon', score: 'IELTS: 8.0, DTM: 187', university: 'UNIVERSITY OF HONG KONG', type: 'IELTS', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=520&q=80' },
-  { id: 'ielts-4', name: 'Irgashev Mustafo', score: 'IELTS: 7.5, DTM: 184', university: 'SABANCI UNIVERSITY', type: 'IELTS', image: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=520&q=80' }
-];
-
-const sampleDtm = [
-  { id: 'dtm-1', name: 'Mavlonov Abbos', score: 'SAT: 1540, DTM: 186', university: 'TDTU', type: 'DTM', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=520&q=80' },
-  { id: 'dtm-2', name: 'Rauf Lutfulloh', score: 'SAT: 1480, DTM: 181', university: 'O\'zMU', type: 'DTM', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=520&q=80' },
-  { id: 'dtm-3', name: 'Alisher Qodirov', score: 'Ona tili: 95%, DTM: 189', university: 'TUIT', type: 'DTM', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=520&q=80' },
-  { id: 'dtm-4', name: 'Zuhra Valiyeva', score: 'Tarix: 98%, DTM: 188', university: 'TDSHU', type: 'DTM', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=520&q=80' }
-];
-
 const NatijalarGapiradi: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('IELTS');
+  const [activeTab, setActiveTab] = useState<string>('Matematika');
   const [dbStudents, setDbStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -78,17 +64,20 @@ const NatijalarGapiradi: React.FC = () => {
     return () => unsub();
   }, []);
 
-  const combinedStudents = loading ? [] : (dbStudents.length > 0 ? dbStudents : [...sampleIelts, ...sampleDtm]);
-  const students = combinedStudents.filter(s => 
+  const students = dbStudents.filter(s => 
     s.type === activeTab || 
     (s.certSubject && s.certSubject.toLowerCase().includes(activeTab.toLowerCase())) ||
     (activeTab === 'DTM' && s.certSubject && s.certSubject.toLowerCase().includes('dtm'))
   );
 
   const count1 = useCountUp(120);
-  const count2 = useCountUp(7.1, 2000, 1);
   const count3 = useCountUp(185);
   const count4 = useCountUp(96);
+
+  // Don't render entire section if no data at all
+  if (!loading && dbStudents.length === 0) {
+    return null;
+  }
 
   return (
     <section className="natijalar-gapiradi" id="natijalar-gapiradi" data-aos="fade-up">
@@ -102,7 +91,7 @@ const NatijalarGapiradi: React.FC = () => {
                 va universitet natijalari
               </p>
             </div>
-            <Link to="/students" className="see-all-btn" style={{
+            <Link to="/students?tab=certificates" className="see-all-btn" style={{
               color: 'var(--accent-orange)',
               fontWeight: 600,
               textDecoration: 'none',
@@ -121,11 +110,6 @@ const NatijalarGapiradi: React.FC = () => {
             <p>IELTS, SAT va fan sertifikatlari</p>
           </div>
           <div className="ng-stat-card">
-            <h3>{count2}</h3>
-            <h4>IELTS o'rtacha ball</h4>
-            <p>Eng faol o'quvchilarimiz natijasi</p>
-          </div>
-          <div className="ng-stat-card">
             <h3>{count3}+</h3>
             <h4>DTM o'rtacha bali</h4>
             <p>Kirish imtihonlari uchun kuchli tayyorgarlik</p>
@@ -139,7 +123,7 @@ const NatijalarGapiradi: React.FC = () => {
 
         <div className="ng-tabs">
           <div className="ng-tabs-container" style={{ flexWrap: 'wrap', justifyContent: 'center' }}>
-            {['IELTS', 'CEFR', 'Ona tili', 'Matematika', 'Biologiya', 'Kimyo', 'Tarix', 'Fizika', 'DTM'].map(tab => (
+            {['Matematika', 'IELTS', 'CEFR', 'Ona tili', 'Biologiya', 'Kimyo', 'Tarix', 'Fizika', 'DTM'].map(tab => (
               <button
                 key={tab}
                 className={`ng-tab ${activeTab === tab ? 'active' : ''}`}
@@ -154,25 +138,34 @@ const NatijalarGapiradi: React.FC = () => {
 
         <div className="ng-carousel-wrapper">
           <div className="ng-carousel">
-            {students.slice(0, 8).map((student: any, i: number) => (
-              <div 
-                className="ng-card" 
-                key={student?.id || student?.name || i}
-                onClick={() => !loading && navigate('/students/' + (student?.id || student?.name))}
-                style={{cursor: loading ? 'default' : 'pointer'}}
-              >
-                <div className={`ng-card-image-wrapper ${loading ? 'skeleton' : ''}`}>
-                  {!loading && <img src={student.image} alt={student.name} />}
-                </div>
-                <div className="ng-card-info">
-                  <h3 className={`ng-card-name ${loading ? 'skeleton' : ''}`}>{student?.name || 'Loading name'}</h3>
-                  <div className={`ng-card-score ${loading ? 'skeleton' : ''}`}>{!loading ? (student.certScore ? `${student.certScore} ball` : (student.admissionScore || student.score)) : 'Loading score'}</div>
-                  <div className={`ng-card-uni ${loading ? 'skeleton' : ''}`} style={{ fontWeight: 600, color: loading ? 'transparent' : 'var(--accent-orange)' }}>
-                    {!loading ? (student.certSubject || student.university || (student.grade ? student.grade + "-sinf" : '')) : 'University'}
+            {students.length > 0 ? (
+              students.slice(0, 8).map((student: any, i: number) => (
+                <div 
+                  className="ng-card" 
+                  key={student?.id || i}
+                  onClick={() => navigate('/students/' + (student?.id || student?.name))}
+                  style={{cursor: 'pointer'}}
+                >
+                  <div className="ng-card-image-wrapper">
+                    <img src={student.image} alt={student.name} />
+                  </div>
+                  <div className="ng-card-info">
+                    <h3 className="ng-card-name">{student?.name}</h3>
+                    <div className="ng-card-score-big">{student.certScore || student.score || ''}</div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '50px 20px', 
+                color: '#94a3b8', 
+                width: '100%',
+                fontSize: '15px'
+              }}>
+                Bu fan bo'yicha hali natija qo'shilmagan
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

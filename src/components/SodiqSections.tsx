@@ -5,62 +5,26 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import './SodiqSections.css';
 
-const sampleUniversities = [
-  'Harvard', 'NYU Abu Dhabi', 'University of Chicago', 'University of Hong Kong',
-  'Kyoto University', 'Carnegie Mellon', 'University of Toronto', 'WIUT',
-  'Webster University', 'Central Asian University', 'Drexel University', 'Amity University',
-];
+export const sampleOlympiads: any[] = [];
 
-const sampleOlympiads = [
-  {
-    image: 'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=760&q=80',
-    title: "Fan olimpiadalari",
-    text: "Matematika, fizika, informatika va ingliz tili yo'nalishlarida faol ishtirok.",
-    stats: ['18 oltin', '24 kumush', '31 bronza'],
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=760&q=80',
-    title: 'Xalqaro tanlovlar',
-    text: "O'quvchilarimiz xalqaro bellashuvlarda tajriba va natija to'playdi.",
-    stats: ['12 finalchi', '8 sovrindor', '3 kubok'],
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=760&q=80',
-    title: 'Loyiha musobaqalari',
-    text: 'STEM, robototexnika va ijodiy loyiha tanlovlarida muntazam qatnashuv.',
-    stats: ['20 loyiha', '9 g\'olib', '45 qatnashchi'],
-  },
-];
 
 const faqs = [
   ['Qabul imtihoni qanday o\'tadi?', "Matematika, ingliz tili va mantiqiy fikrlash bo'yicha sinov o'tkaziladi."],
-  ['Qaysi sinflar uchun qabul bor?', "Chiroqchi IMda 1-11 sinf o'quvchilari uchun ta'lim jarayoni tashkil etiladi."],
+  ['Qaysi sinflar uchun qabul bor?', "Chiroqchi IMda 1-11 sinf o'quvchilar uchun ta'lim jarayoni tashkil etiladi."],
   ['Sertifikat va DTM tayyorgarligi bormi?', "Ha, o'quvchilar IELTS, SAT, fan sertifikatlari va DTM imtihonlariga tayyorlanadi."],
   ['Hujjatlarni qanday topshiraman?', 'Maktabga kelib yoki bog\'lanish formasi orqali ma\'lumot qoldirishingiz mumkin.'],
 ];
 
 const SodiqSections: React.FC = () => {
-  const sampleGallery = [
-    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=720&q=80',
-  ];
 
-  const [gallery, setGallery] = useState<string[]>(sampleGallery);
+  const [gallery, setGallery] = useState<string[]>([]);
   const [dbUniversities, setDbUniversities] = useState<string[]>([]);
   const [dbOlympiads, setDbOlympiads] = useState<any[]>([]);
 
   useEffect(() => {
     const unsubGallery = onSnapshot(collection(db, 'gallery'), (snapshot) => {
       const data = snapshot.docs.map(doc => doc.data().image);
-      if (data.length > 0) {
-        setGallery(data);
-      } else {
-        setGallery(sampleGallery);
-      }
+      setGallery(data);
     });
     
     const unsubUni = onSnapshot(collection(db, 'universities'), (snapshot) => {
@@ -69,7 +33,9 @@ const SodiqSections: React.FC = () => {
     });
 
     const unsubOly = onSnapshot(collection(db, 'olympiads'), (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((item: any) => !item.isDraft);
       setDbOlympiads(data);
     });
 
@@ -80,8 +46,9 @@ const SodiqSections: React.FC = () => {
     };
   }, []);
 
-  const universities = [...dbUniversities, ...sampleUniversities];
-  const olympiads = [...dbOlympiads, ...sampleOlympiads];
+  const universities = dbUniversities;
+  const olympiads = dbOlympiads;
+  const visibleOlympiads = olympiads.slice(0, 3);
 
   return (
     <>
@@ -91,11 +58,15 @@ const SodiqSections: React.FC = () => {
             <span>Universitetlar</span>
             <h2>O'quvchilarimiz qaysi universitetlarga kirishdi?</h2>
           </div>
-          <div className="university-marquee">
-            {universities.concat(universities).map((name, index) => (
-              <div className="university-logo" key={`${name}-${index}`}>{name}</div>
-            ))}
-          </div>
+          {universities.length > 0 ? (
+            <div className="university-marquee">
+              {universities.concat(universities).map((name, index) => (
+                <div className="university-logo" key={`${name}-${index}`}>{name}</div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ textAlign: 'center', color: '#94a3b8', padding: '30px 0' }}>Universitetlar hali qo'shilmagan</p>
+          )}
           <p className="university-note">Chiroqchi IM bitiruvchilari TOP universitetlar sari dadil qadam tashlaydi</p>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
             <Link to="/universities" className="see-all-btn" style={{
@@ -119,29 +90,48 @@ const SodiqSections: React.FC = () => {
             <h2>Olimpiadachilarimiz</h2>
             <p>O'quvchilarimiz fan olimpiadalari va xalqaro musobaqalarda erishgan natijalari</p>
           </div>
-          {olympiads.length > 0 ? (
+          {visibleOlympiads.length > 0 ? (
             <div className="olympiad-grid">
-              {olympiads.map((item) => (
-                <article className="olympiad-card" key={item.id || item.title}>
-                  <img src={item.image} alt={item.title} />
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.text}</p>
-                    <div className="olympiad-stats">
-                      {item.stats?.map((stat: string) => <span key={stat}>{stat}</span>)}
+              {visibleOlympiads.map((item, index) => {
+                const itemKey = item.id || `oly-${index + 1}`;
+                const firstImg = (item.images && item.images[0]) || item.image;
+                const statsArray = Array.isArray(item.stats) ? item.stats : (item.stats ? [item.stats] : []);
+
+                return (
+                  <Link to={`/olympiads/${itemKey}`} className="olympiad-card" key={itemKey} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                    <img src={firstImg} alt={item.title} />
+                    <div>
+                      <h3>{item.title}</h3>
+                      <p style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.text}</p>
+                      <div className="olympiad-stats">
+                        {statsArray.map((stat: string) => <span key={stat}>{stat}</span>)}
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <p style={{textAlign: 'center'}}>Ma'lumotlar yuklanmoqda yoki hali qo'shilmagan.</p>
           )}
-          <div className="olympiad-totals">
-            <span><Medal size={20} />73 jami medal</span>
-            <span><Trophy size={20} />12 xalqaro musobaqa</span>
-            <span><Award size={20} />45 sovrindor o'quvchi</span>
+
+          <div style={{ textAlign: 'center', marginTop: '30px' }}>
+            <Link to="/olympiads" className="see-all-btn" style={{
+              display: 'inline-block',
+              color: 'var(--accent-orange)',
+              fontWeight: 600,
+              textDecoration: 'none',
+              padding: '12px 28px',
+              border: '2px solid var(--accent-orange)',
+              borderRadius: '10px',
+              transition: 'all 0.3s ease',
+              fontSize: '16px'
+            }}>
+              Barcha olimpiada natijalarini ko'rish →
+            </Link>
           </div>
+
+
         </div>
       </section>
 
@@ -152,13 +142,17 @@ const SodiqSections: React.FC = () => {
             <h2>Chiroqchi IM hayotidan lavhalar</h2>
           </div>
         </div>
-        <div className="gallery-carousel-wrapper">
-          <div className="gallery-marquee">
-            {gallery.concat(gallery).map((src, index) => (
-              <img src={src} alt={`Chiroqchi IM galereya ${index + 1}`} key={`${src}-${index}`} />
-            ))}
+        {gallery.length > 0 ? (
+          <div className="gallery-carousel-wrapper">
+            <div className="gallery-marquee">
+              {gallery.concat(gallery).map((src, index) => (
+                <img src={src} alt={`Chiroqchi IM galereya ${index + 1}`} key={`${src}-${index}`} />
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <p style={{ textAlign: 'center', color: '#94a3b8', padding: '40px 0' }}>Galereya rasmlari hali qo'shilmagan</p>
+        )}
       </section>
 
       <section className="faq-contact-section" id="aloqa" data-aos="fade-up">
@@ -176,18 +170,26 @@ const SodiqSections: React.FC = () => {
 
           <div className="contact-panel">
             <span className="mini-kicker">Bog'lanish</span>
-            <h2>Maslahat olish uchun raqamingizni qoldiring</h2>
-            <p>Biz siz bilan 24 soat ichida bog'lanamiz.</p>
+            <h2>Anonim savol, taklif yoki murojaat qoldiring</h2>
+            <p>Sizning fikringiz biz uchun muhim. Barcha murojaatlar e'tiborga olinadi.</p>
             <form className="contact-form">
-              <input placeholder="Ismingiz" />
-              <input placeholder="+998 90 123 45 67" />
-              <select defaultValue="">
-                <option value="" disabled>Sinfni tanlang</option>
-                <option>1-4 sinf</option>
-                <option>5-8 sinf</option>
-                <option>9-11 sinf</option>
-              </select>
-              <button type="button">Maslahat olaman <ArrowRight size={18} /></button>
+              <input placeholder="Ismingiz (ixtiyoriy)" />
+              <textarea 
+                placeholder="Savol, taklif yoki murojaatingizni yozing..." 
+                rows={4} 
+                style={{
+                  width: '100%', 
+                  padding: '12px 16px', 
+                  borderRadius: '12px', 
+                  border: '1px solid #cbd3df', 
+                  resize: 'vertical', 
+                  fontFamily: 'inherit',
+                  marginBottom: '16px'
+                }}
+              />
+              <button type="button" onClick={() => { alert("Murojaatingiz qabul qilindi. Rahmat!"); }}>
+                Yuborish <ArrowRight size={18} />
+              </button>
             </form>
             <div className="contact-info">
               <span><MapPin size={18} /> Chiroqchi tumani, ixtisoslashtirilgan maktab</span>
@@ -224,6 +226,7 @@ const SodiqSections: React.FC = () => {
             <div className="footer-column">
               <h3>Aloqa</h3>
               <nav>
+                <a href="#aloqa" style={{ color: 'var(--accent-orange)' }}>Savol yoki taklif qoldirish</a>
                 <span>+998 90 123 45 67</span>
                 <span>info@chiroqchi-im.uz</span>
                 <span>Chiroqchi tumani, ixtisoslashtirilgan maktab</span>
