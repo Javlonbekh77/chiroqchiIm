@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import './NatijalarGapiradi.css';
 
@@ -51,7 +51,6 @@ const NatijalarGapiradi: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('Matematika');
   const [dbStudents, setDbStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'students'), (snapshot) => {
