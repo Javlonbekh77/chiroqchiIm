@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Award, ChevronDown, Mail, MapPin, Medal, Phone, Trophy } from 'lucide-react';
+import { ArrowRight, ChevronDown, Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
