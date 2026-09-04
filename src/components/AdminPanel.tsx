@@ -60,6 +60,7 @@ const AdminPanel: React.FC = () => {
   const [olympiads, setOlympiads] = useState<any[]>([]);
   const [news, setNews] = useState<any[]>([]);
   const [teachers, setTeachers] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
 
   // Combined Teachers list (includes default JSON items not yet edited/deleted in Firestore)
   const combinedTeachers = [...teachers.filter(t => !t.isDeleted)];
@@ -164,6 +165,14 @@ const AdminPanel: React.FC = () => {
       setTeachers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
 
+    const unsubMessages = onSnapshot(collection(db, 'messages'), (snapshot) => {
+      setMessages(
+        snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      );
+    });
+
     return () => {
       unsubStudents();
       unsubGrads();
@@ -172,6 +181,7 @@ const AdminPanel: React.FC = () => {
       unsubOlympiads();
       unsubNews();
       unsubTeachers();
+      unsubMessages();
     };
   }, [isLoggedIn]);
 
@@ -708,6 +718,9 @@ const AdminPanel: React.FC = () => {
           <li className={activeTab === 'olympiads' ? 'active' : ''} onClick={() => setActiveTab('olympiads')}>
             Olimpiada natijalari
           </li>
+          <li className={activeTab === 'messages' ? 'active' : ''} onClick={() => setActiveTab('messages')}>
+            Murojaatlar
+          </li>
         </ul>
         <button className="publish-all-btn" onClick={handlePublishAll} disabled={isPublishing}>
           {isPublishing ? "E'lon qilinmoqda..." : "E'lon qilish (Publish)"}
@@ -1106,6 +1119,28 @@ const AdminPanel: React.FC = () => {
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <button onClick={() => handleEditOlyClick(item)} style={{ background: '#3b82f6', color: 'white', padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Tahrirlash</button>
                     <button onClick={() => handleDelete('olympiads', item.id)} className="delete-btn">O'chirish</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* MESSAGES TAB */}
+        {activeTab === 'messages' && (
+          <div>
+            <h3>Murojaatlar va Takliflar</h3>
+            <div className="items-list">
+              {messages.length === 0 && <p style={{ padding: '20px', color: '#64748b' }}>Hozircha murojaatlar yo'q</p>}
+              {messages.map((item) => (
+                <div key={item.id} className="admin-list-item" style={{ flexDirection: 'column', alignItems: 'flex-start', padding: '15px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '10px' }}>
+                    <strong>{item.name}</strong>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>{new Date(item.createdAt).toLocaleString()}</span>
+                  </div>
+                  <p style={{ margin: 0, color: '#334155', whiteSpace: 'pre-wrap' }}>{item.message}</p>
+                  <div style={{ marginTop: '15px' }}>
+                    <button onClick={() => handleDelete('messages', item.id)} className="delete-btn">O'chirish</button>
                   </div>
                 </div>
               ))}

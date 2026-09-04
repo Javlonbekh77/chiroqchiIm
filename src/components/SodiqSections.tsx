@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, ChevronDown, Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import './SodiqSections.css';
 
@@ -20,6 +20,10 @@ const SodiqSections: React.FC = () => {
   const [gallery, setGallery] = useState<string[]>([]);
   const [dbUniversities, setDbUniversities] = useState<string[]>([]);
   const [dbOlympiads, setDbOlympiads] = useState<any[]>([]);
+  
+  const [contactName, setContactName] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const unsubGallery = onSnapshot(collection(db, 'gallery'), (snapshot) => {
@@ -49,6 +53,29 @@ const SodiqSections: React.FC = () => {
   const universities = dbUniversities;
   const olympiads = dbOlympiads;
   const visibleOlympiads = olympiads.slice(0, 3);
+
+  const handleContactSubmit = async () => {
+    if (!contactMessage.trim()) {
+      alert("Iltimos, xabaringizni yozing!");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await addDoc(collection(db, 'messages'), {
+        name: contactName.trim() || 'Anonim',
+        message: contactMessage.trim(),
+        createdAt: new Date().toISOString(),
+        isRead: false
+      });
+      alert("Murojaatingiz qabul qilindi. Rahmat!");
+      setContactName('');
+      setContactMessage('');
+    } catch (err) {
+      alert("Xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -173,10 +200,16 @@ const SodiqSections: React.FC = () => {
             <h2>Anonim savol, taklif yoki murojaat qoldiring</h2>
             <p>Sizning fikringiz biz uchun muhim. Barcha murojaatlar e'tiborga olinadi.</p>
             <form className="contact-form">
-              <input placeholder="Ismingiz (ixtiyoriy)" />
+              <input 
+                placeholder="Ismingiz (ixtiyoriy)" 
+                value={contactName}
+                onChange={e => setContactName(e.target.value)}
+              />
               <textarea 
                 placeholder="Savol, taklif yoki murojaatingizni yozing..." 
                 rows={4} 
+                value={contactMessage}
+                onChange={e => setContactMessage(e.target.value)}
                 style={{
                   width: '100%', 
                   padding: '12px 16px', 
@@ -187,13 +220,14 @@ const SodiqSections: React.FC = () => {
                   marginBottom: '16px'
                 }}
               />
-              <button type="button" onClick={() => { alert("Murojaatingiz qabul qilindi. Rahmat!"); }}>
-                Yuborish <ArrowRight size={18} />
+              <button type="button" onClick={handleContactSubmit} disabled={isSubmitting}>
+                {isSubmitting ? 'Yuborilmoqda...' : 'Yuborish'} <ArrowRight size={18} />
               </button>
             </form>
             <div className="contact-info">
               <span><MapPin size={18} /> Chiroqchi tumani, ixtisoslashtirilgan maktab</span>
-              <span><Phone size={18} /> +998 90 123 45 67</span>
+              <span><Phone size={18} /> +998 94 189 00 12</span>
+              <span><Phone size={18} /> +998 91 455 55 88</span>
               <span><Mail size={18} /> info@chiroqchi-im.uz</span>
             </div>
           </div>
@@ -206,44 +240,6 @@ const SodiqSections: React.FC = () => {
           />
         </div>
       </section>
-
-      <footer className="site-footer">
-        <div className="container footer-container">
-          <div className="footer-brand">
-            <img src="/main-logo.png" alt="Chiroqchi IM" className="footer-logo" />
-            <p>Kelajak shu yerdan qanot qoqadi. Ilm-fan, texnologiya va tarbiya uyg'unlashgan maskan.</p>
-          </div>
-          <div className="footer-links">
-            <div className="footer-column">
-              <h3>Havolalar</h3>
-              <nav>
-                <a href="#home">Bosh sahifa</a>
-                <a href="#about">Maktab haqida</a>
-                <a href="#natijalar">Natijalar</a>
-                <a href="#galereya">Galereya</a>
-              </nav>
-            </div>
-            <div className="footer-column">
-              <h3>Aloqa</h3>
-              <nav>
-                <a href="#aloqa" style={{ color: 'var(--accent-orange)' }}>Savol yoki taklif qoldirish</a>
-                <span>+998 90 123 45 67</span>
-                <span>info@chiroqchi-im.uz</span>
-                <span>Chiroqchi tumani, ixtisoslashtirilgan maktab</span>
-              </nav>
-            </div>
-          </div>
-        </div>
-        
-        <div className="footer-bottom">
-          <div className="container developer-credit">
-            <span className="dev-text">Designed & Developed by</span>
-            <a href="https://t.me/javlonbek_xoliqulov" target="_blank" rel="noopener noreferrer" className="dev-name">
-              Javlonbek Xoliqulov
-            </a>
-          </div>
-        </div>
-      </footer>
     </>
   );
 };

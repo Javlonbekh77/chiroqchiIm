@@ -21,7 +21,11 @@ const Results: React.FC = () => {
     return () => unsub();
   }, []);
 
-  const cards = loading ? [] : dbGrads;
+  const cards = loading ? [] : [...dbGrads].sort((a, b) => {
+    if (a.name?.toLowerCase().includes('javlonbek xoliqulov')) return -1;
+    if (b.name?.toLowerCase().includes('javlonbek xoliqulov')) return 1;
+    return 0;
+  });
 
   if (!loading && cards.length === 0) {
     return null;

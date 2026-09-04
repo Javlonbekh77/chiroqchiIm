@@ -57,7 +57,6 @@ const AllStudents: React.FC = () => {
     return () => { unsub(); unsubGrads(); };
   }, []);
 
-  // Filter certificates by subject
   const filteredCertificates = subjectFilter === 'Barchasi' 
     ? dbStudents 
     : dbStudents.filter(s => 
@@ -65,6 +64,12 @@ const AllStudents: React.FC = () => {
         (s.certSubject && s.certSubject.toLowerCase().includes(subjectFilter.toLowerCase())) ||
         (subjectFilter === 'DTM' && s.certSubject && s.certSubject.toLowerCase().includes('dtm'))
       );
+
+  const sortedGrads = [...dbGrads].sort((a, b) => {
+    if (a.name?.toLowerCase().includes('javlonbek xoliqulov')) return -1;
+    if (b.name?.toLowerCase().includes('javlonbek xoliqulov')) return 1;
+    return 0;
+  });
 
   return (
     <div className="page-container" style={{ background: '#f7f9fc' }}>
@@ -183,6 +188,18 @@ const AllStudents: React.FC = () => {
                 </div>
               ))}
             </div>
+          ) : loading ? (
+            <div className="all-grid">
+              {Array(8).fill(0).map((_, i) => (
+                <div className="ng-card" key={`skeleton-${i}`}>
+                  <div className="ng-card-image-wrapper skeleton" style={{ width: '100%', height: '300px' }}></div>
+                  <div className="ng-card-info">
+                    <h3 className="ng-card-name skeleton" style={{ height: '20px', width: '70%', margin: '0 auto 10px' }}></h3>
+                    <div className="ng-card-score-big skeleton" style={{ height: '30px', width: '40%', margin: '0 auto' }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
             <div style={{ 
               textAlign: 'center', 
@@ -190,13 +207,13 @@ const AllStudents: React.FC = () => {
               color: '#94a3b8',
               fontSize: '16px'
             }}>
-              {loading ? 'Yuklanmoqda...' : (subjectFilter !== 'Barchasi' ? `"${subjectFilter}" fani bo'yicha sertifikatlar topilmadi` : 'Hali sertifikat ma\'lumotlari qo\'shilmagan')}
+              {subjectFilter !== 'Barchasi' ? `"${subjectFilter}" fani bo'yicha sertifikatlar topilmadi` : 'Hali sertifikat ma\'lumotlari qo\'shilmagan'}
             </div>
           )
         ) : (
-          dbGrads.length > 0 ? (
+          sortedGrads.length > 0 ? (
             <div className="results-grid" style={{ maxWidth: '100%' }}>
-              {dbGrads.map((card, index) => (
+              {sortedGrads.map((card, index) => (
                 <article 
                   className="result-card" 
                   key={card.id || index}
@@ -217,6 +234,19 @@ const AllStudents: React.FC = () => {
                 </article>
               ))}
             </div>
+          ) : loading ? (
+            <div className="results-grid" style={{ maxWidth: '100%' }}>
+              {Array(8).fill(0).map((_, i) => (
+                <article className="result-card" key={`skeleton-grad-${i}`}>
+                  <div className="result-photo skeleton" style={{ height: '280px' }}></div>
+                  <div className="result-body">
+                    <span className="result-university skeleton" style={{ height: '15px', width: '50%', marginBottom: '10px' }}></span>
+                    <h3 className="skeleton" style={{ height: '22px', width: '80%', marginBottom: '8px' }}></h3>
+                    <p className="skeleton" style={{ height: '14px', width: '90%' }}></p>
+                  </div>
+                </article>
+              ))}
+            </div>
           ) : (
             <div style={{ 
               textAlign: 'center', 
@@ -224,7 +254,7 @@ const AllStudents: React.FC = () => {
               color: '#94a3b8',
               fontSize: '16px'
             }}>
-              {loading ? 'Yuklanmoqda...' : 'Hali bitiruvchi ma\'lumotlari qo\'shilmagan'}
+              Hali bitiruvchi ma'lumotlari qo'shilmagan
             </div>
           )
         )}
